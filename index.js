@@ -1,15 +1,14 @@
 'use strict';
 
 const fs = require('fs');
-const { Client, GatewayIntentBits, Partials, Collection } = require('discord.js');
+const { Client, GatewayIntentBits, Partials, Collection} = require('discord.js');
 const { Player } = require('discord-player');
 const express = require('express')
+require('lyrics-finder');
 require('dotenv').config();
-require('console-stamp')(console, { format: ':date(yyyy/mm/dd HH:MM:ss.l)' });
 
 const config = require('./config.json');
 const embed = require('./src/embeds/embeds');
-
 
 
 
@@ -25,7 +24,6 @@ let client = new Client({
     disableMentions: 'everyone',
 });
 
-
 client.config = config;
 
 client.config.prefix = process.env.PREFIX || config.prefix;
@@ -33,7 +31,6 @@ client.config.playing = process.env.PLAYING || config.playing;
 client.config.defaultVolume = Number(process.env.DEFAULTVOLUME || config.defaultVolume);
 client.config.maxVolume = Number(process.env.MAXVOLUME || config.maxVolume);
 client.config.autoLeave = process.env.AUTO_LEAVE === 'true' ? true : false || config.autoLeave;
-client.config.autoLeaveCooldown = Number(process.env.AUTO_LEAVE_COOLDOWN || config.autoLeaveCooldown);
 client.config.displayVoiceState = process.env.DISPLAY_VOICE_STATE === 'true' ? true : false || config.displayVoiceState;
 client.config.port = process.env.PORT || config.port;
 
@@ -84,7 +81,7 @@ const loadFramework = () => {
         })
 
         app.get('/', function (req, res) {
-            res.send('200 ok.')
+            res.send('Wichy 2.0 online')
         })
 
         resolve();
@@ -96,7 +93,7 @@ const loadCommands = () => {
     console.log(`-> loading commands ......`);
     return new Promise((resolve, reject) => {
         fs.readdir('./src/commands/', (err, files) => {
-            console.log(`+-----------------------------+`);
+            console.log(`+-------------------------------+`);
             if (err)
                 return console.log('Could not find any commands!');
 
@@ -109,7 +106,7 @@ const loadCommands = () => {
                 try {
                     const command = require(`./src/commands/${file}`);
 
-                    console.log(`| Loaded Command ${command.name.toLowerCase()}  \t|`);
+                    console.log(`| Loaded Command ${command.name.toLowerCase()}   \t|`);
 
                     client.commands.set(command.name.toLowerCase(), command);
                     delete require.cache[require.resolve(`./src/commands/${file}`)];
@@ -117,7 +114,7 @@ const loadCommands = () => {
                     reject(error);
                 }
             };
-            console.log(`+-----------------------------+`);
+            console.log(`+-------------------------------+`);
             console.log('-- loading Commands finished --');
 
             resolve();
@@ -129,14 +126,14 @@ const loadCommands = () => {
 Promise.all([loadEvents(), loadFramework(), loadCommands()])
     .then(function () {
         console.log('\x1B[32m*** All loaded successfully ***\x1B[0m');
-        client.login(process.env.TOKEN);
+        client.login(config.token);
     });
 
 
 
 
 const settings = (queue, song) =>
-    `**Volume**: \`${queue.volume}%\` | **Loop**: \`${queue.repeatMode ? (queue.repeatMode === 2 ? 'All' : 'ONE') : 'Off'}\``;
+    `**เสียง**: \`${queue.volume}%\` | **วนซ้ำ**: \`${queue.repeatMode ? (queue.repeatMode === 2 ? 'All' : 'ONE') : 'Off'}\``;
 
 
 player.on('error', (queue, error) => {
@@ -148,17 +145,19 @@ player.on('connectionError', (queue, error) => {
 });
 
 player.on('trackStart', (queue, track) => {
-    if (queue.repeatMode !== 0)
-        return;
-    queue.metadata.send({ embeds: [embed.Embed_play("Playing", track.title, track.url, track.duration, track.thumbnail, settings(queue))] });
+    /*if (queue.repeatMode !== 0)
+        return;*/
+    queue.metadata.send({ embeds: [embed.Embed_play("กำลังเล่นในขณะนี้", track.title, track.url, track.duration, track.thumbnail, settings(queue))] });
 });
 
 player.on('trackAdd', (queue, track) => {
     if (queue.previousTracks.length > 0)
-        queue.metadata.send({ embeds: [embed.Embed_play("Added", track.title, track.url, track.duration, track.thumbnail, settings(queue))] });
+        queue.metadata.send('✅ '+track.title+' ถูกเพิ่มเข้าไปในคิวแล้ว');
+        //queue.metadata.send({ embeds: [embed.Embed_play("Added", track.title, track.url, track.duration, track.thumbnail, settings(queue))] });
 });
 
 player.on('channelEmpty', (queue) => {
-    if (!client.config.autoLeave)
+    if (!client.config.autoLeave) {
         queue.stop();
+    }
 });

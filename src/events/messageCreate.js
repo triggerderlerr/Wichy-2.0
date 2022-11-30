@@ -14,10 +14,10 @@ module.exports = (client, message) => {
 
     if (cmd && cmd.voiceChannel) {
         if (!message.member.voice.channel)
-            return message.channel.send(`❌ | You are not connected to an audio channel.`);
+            return message.channel.send(`❌ คุณยังไม่ได้เชื่อมต่อกับห้องสนทนา`);
 
         if (message.guild.members.me.voice.channel && message.member.voice.channelId !== message.guild.members.me.voice.channelId)
-            return message.channel.send(`❌ | You are not on the same audio channel as me.`);
+            return message.channel.send(`❌ คุณไม่ได้อยู่ในห้องสนทนาเดียวกันกับบอท`);
     }
 
     if (cmd) {

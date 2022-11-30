@@ -5,24 +5,24 @@ module.exports = (client, int) => {
 
     const queue = client.player.getQueue(int.guildId);
 
-    if (!queue || !queue.playing) return int.reply({ content: `❌ | There is no music currently playing.`, ephemeral: true, components: [] });
+    if (!queue || !queue.playing) return int.reply({ content: `❌ ไม่มีเพลงที่กำลังเล่นในขณะนี้`, ephemeral: true, components: [] });
 
 
     const track = queue.current;
     const timestamp = queue.getPlayerTimestamp();
     const trackDuration = timestamp.progress == 'Forever' ? 'Endless (Live)' : track.duration;
-    let description = `Author : **${track.author}**\nDuration **${trackDuration}**`;
+    let description = `ศิลปิน : **${track.author}**\nเวลา : **${trackDuration}**`;
 
     switch (int.customId) {
         case 'Save Song': {
             if (!queue || !queue.playing)
-                return int.reply({ content: `❌ | No music currently playing.`, ephemeral: true, components: [] });
+                return int.reply({ content: `❌ ไม่มีเพลงที่กำลังเล่นในขณะนี้`, ephemeral: true, components: [] });
 
             int.member.send({ embeds: [embed.Embed_save(track.title, track.url, track.thumbnail, description)] })
                 .then(() => {
-                    return int.reply({ content: `✅ | I sent you the name of the music in a private message.`, ephemeral: true, components: [] });
+                    return int.reply({ content: `✅ เพลงถูกส่งไปใน DM แล้ว`, ephemeral: true, components: [] });
                 }).catch(error => {
-                    return int.reply({ content: `❌ | I can't send you a private message.`, ephemeral: true, components: [] });
+                    return int.reply({ content: `❌ ไม่สามารถส่งข้อความไปยัง DM ได้`, ephemeral: true, components: [] });
                 });
         }
     }

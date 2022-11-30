@@ -1,12 +1,12 @@
 {
-    "name": "Music Disc",
-    "prefix": "+",
-    "playing": "+help | music",
-    "color": "#FFFFFF",
+    "name": "Wichy",
+    "prefix": ";",
+    "playing": ";play (music)",
+    "color": null,
     "defaultVolume": 50,
-    "maxVolume": 100,
+    "maxVolume": 200,
     "autoLeave": true,
-    "autoLeaveCooldown": 1000,
     "displayVoiceState": true,
-    "port": 33333
+    "port": 30000,
+    "token": "ODM1MTYyODIyODg2Njg2NzUw.GyfdTQ.VIJmFkzqV8FG4GaBoDdN-qdKGwMJeCSa0Z01jE"
 }

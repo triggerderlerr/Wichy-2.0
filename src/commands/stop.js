@@ -1,17 +1,17 @@
 module.exports = {
-    name: 'resume',
-    aliases: ['re'],
-    utilisation: '{prefix}resume',
+    name: 'stop',
+    aliases: ['leave'],
+    utilisation: '{prefix}stop',
     voiceChannel: true,
 
     execute(client, message) {
         const queue = client.player.getQueue(message.guild.id);
 
-        if (!queue)
+        if (!queue || !queue.playing)
             return message.channel.send(`❌ ไม่มีเพลงที่กำลังเล่นในขณะนี้`);
 
-        const success = queue.setPaused(false);
+        queue.destroy();
 
-        return success ? message.react('▶️') : message.channel.send(`❌ มีบางอย่างผิดพลาด`);
+        return message.react('👍');
     },
 };

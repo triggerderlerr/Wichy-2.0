@@ -2,7 +2,7 @@ const embed = require('../embeds/embeds');
 
 module.exports = {
     name: 'ping',
-    aliases: [],
+    aliases: ['pi'],
     utilisation: '{prefix}ping',
 
     execute(client, message) {

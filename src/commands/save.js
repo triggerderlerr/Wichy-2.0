@@ -2,7 +2,7 @@ const embed = require('../embeds/embeds');
 
 module.exports = {
     name: 'save',
-    aliases: [],
+    aliases: ['sv'],
     utilisation: '{prefix}save',
     voiceChannel: true,
 
@@ -11,10 +11,10 @@ module.exports = {
 
         const timestamp = queue.getPlayerTimestamp();
         const trackDuration = timestamp.progress == 'Forever' ? 'Endless (Live)' : queue.current.duration;
-        let description = `Author : **${queue.current.author}**\nDuration **${trackDuration}**`;
+        let description = `ศิลปิน : **${queue.current.author}**\เวลา : **${trackDuration}**`;
 
         if (!queue || !queue.playing)
-            return message.channel.send(`❌ | There is no music currently playing!. `);
+            return message.channel.send(`❌ ไม่มีเพลงที่กำลังเล่นในขณะนี้`);
 
 
         message.author.send({ embeds: [embed.Embed_save(queue.current.title, queue.current.url, queue.current.thumbnail, description)] })

@@ -11,19 +11,19 @@ module.exports = {
         const queue = client.player.getQueue(message.guild.id);
 
         if (!queue || !queue.playing)
-            return message.channel.send(`❌ | There is no music currently playing.`);
+            return message.channel.send(`❌ ไม่มีเพลงที่กำลังเล่นในขณะนี้`);
 
         const track = queue.current;
 
         const timestamp = queue.getPlayerTimestamp();
         const trackDuration = timestamp.progress == 'Forever' ? 'Endless (Live)' : track.duration;
-        let description = `Author : **${track.author}**\nDuration **${trackDuration}**`;
+        let description = `ศิลปิน : **${track.author}**\nเวลา : **${trackDuration}**`;
 
 
 
         let saveButton = new ButtonBuilder();
         saveButton.setCustomId('Save Song');
-        saveButton.setLabel('Save Song');
+        saveButton.setLabel('บันทึก');
         saveButton.setStyle(ButtonStyle.Success);
         const row = new ActionRowBuilder().addComponents(saveButton)
 

@@ -1,6 +1,6 @@
 module.exports = {
     name: 'back',
-    aliases: ['rewind'],
+    aliases: ['b'],
     utilisation: '{prefix}back',
     voiceChannel: true,
 
@@ -8,10 +8,10 @@ module.exports = {
         const queue = client.player.getQueue(message.guild.id);
 
         if (!queue || !queue.playing)
-            return message.channel.send(`❌ | No music currently playing.`);
+            return message.channel.send(`❌ ไม่มีเพลงที่กำลังเล่นในขณะนี้`);
 
         if (!queue.previousTracks[1])
-            return message.channel.send(`❌ | There was no music playing before.`);
+            return message.channel.send(`❌ ไม่มีเพลงที่เล่นก่อนหน้านี้`);
 
         await queue.back();
 

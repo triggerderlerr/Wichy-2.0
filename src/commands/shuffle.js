@@ -1,17 +1,18 @@
 module.exports = {
     name: 'shuffle',
-    aliases: ['random'],
+    aliases: ['sh'],
     utilisation: '{prefix}shuffle',
     voiceChannel: true,
 
     execute(client, message) {
         const queue = client.player.getQueue(message.guild.id);
 
-        if (!queue || !queue.playing)
-            return message.channel.send(`${message.author}, There is no music currently playing!. ❌`);
+        if (!queue || !queue.playing) return message.channel.send('❌ ไม่มีเพลงที่กำลังเล่นในขณะนี้');
 
-        const success = queue.shuffle();
+        if (!queue.tracks[0]) return message.channel.send(`❌ ไม่มีเพลงอื่นในคิว`);
 
-        return success ? message.react('👍') : message.channel.send(`❌ | Something went wrong.`);
-    },
+        queue.shuffle();
+        return message.react('🔀');
+
+    }
 };
