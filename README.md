@@ -4,7 +4,11 @@ Wichy 2.0 was forked from Music Disc by hmes98318, I fork this bot because I wan
 
 To see more please [click here](https://github.com/hmes98318/Music-Disc)
 
+## Invite
+
 Or if you want to invite my bot then [click here](https://bot.crazywichgg.tk/en)
+
+PS: _This bot is in Thai language_ 
 
 ## Basic Commands
 
