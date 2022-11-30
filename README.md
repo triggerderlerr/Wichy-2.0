@@ -2,6 +2,8 @@
 
 Wichy 2.0 was forked from Music Disc by hmes98318, I fork this bot because I want to use them in my and my friend's discord server.
 
+If you had any issue please contact me on discord. `CrazyWichGG#4184`
+
 To see more please [click here](https://github.com/hmes98318/Music-Disc)
 
 ## Invite
