@@ -2,7 +2,7 @@
     "name": "Wichy",
     "prefix": ";",
     "playing": ";play (music)",
-    "color": null, //unused
+    "color": null,
     "defaultVolume": 50,
     "maxVolume": 200,
     "autoLeave": true,
