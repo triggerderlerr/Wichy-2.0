@@ -1,97 +1,23 @@
-<img width="150" height="150" align="right" style="float: right; margin: 0 10px 0 0;" alt="music_disc" src="https://i.imgur.com/JWSIlSt.png">
+# Wichy 2.0
 
-# Music Disc 
+Wichy 2.0 was forked from Music Disc by hmes98318, I fork this bot because I want to use them in my and my friend's discord server.
 
-<a href="https://github.com/hmes98318/Music-Disc/releases"><img alt="GitHub package.json version" src="https://img.shields.io/github/package-json/v/hmes98318/Music-Disc?style=for-the-badge"></a> 
-<a href="https://discord.js.org/"><img src="https://img.shields.io/badge/Discord.JS-v14-blue?style=for-the-badge&logo=DISCORD" /></a> 
-<a href="https://nodejs.org/"><img src="https://img.shields.io/badge/Node%20Version->=16.13.0-brightgreen?style=for-the-badge&logo=Node.js"></a> 
-<a href="https://github.com/hmes98318/Music-Disc/blob/main/LICENSE"><img alt="GitHub" src="https://img.shields.io/github/license/hmes98318/Music-Disc?style=for-the-badge&color=brightgreen"></a>  
+To see more please [click here](https://github.com/hmes98318/Music-Disc)
 
-### Discord.js v14 Music Bot  
-Supports **YouTube**, **Spotify**, **SoundCloud** streams.
+Or if you want to invite my bot then [click here](https://bot.crazywichgg.tk/en)
 
+## Basic Commands
 
-### Reference version  
-[**node.js  `v18.12.1`**](https://nodejs.org/en/)  
-[**discord.js  `v14.6.0`**](https://www.npmjs.com/package/discord.js)  
+`;play` `Song name or URL` to play a song or a playlist from any platfrom.
 
+`;stop` to stop bot from playing songs.
 
-## Deploying with node.js
+`;loop` `(Optional) Mode` to enable loop.
 
-### Clone the repository
-```
-git clone -b v1.2.4 https://github.com/hmes98318/Music-Disc.git
-```
-or [**click here**](https://github.com/hmes98318/Music-Disc/releases) to download  
+`;skip` to skip to the next song.
 
+`;back` to go back to the previous song.
 
-### Install the dependencies
-auto install all dependencies on [`package.json`](./package.json)  
-```
-npm install
-```
+`;volume` to change volume for currently queue.
 
-### Configure Files
-[`.env`](./.env) 
-```env
-TOKEN = "your_token"
-```
-
-[`config.json`](./config.json)  
-```json
-{
-    "name": "Music Disc",
-    "prefix": "+",
-    "playing": "+help | music",
-    "color": "#FFFFFF",
-    "defaultVolume": 50,
-    "maxVolume": 100,
-    "autoLeave": true,
-    "autoLeaveCooldown": 1000,
-    "displayVoiceState": true,
-    "port": 33333
-}
-```
-**`autoLeave`** : After the music finished, can choose whether let the bot leave voice channel automatically or not.  
-**`displayVoiceState`** : Show voice channel status updates.   
-
-## Running the script 
-```
-node index.js
-```
-
-
-## Deploying with Docker Compose  
-**image link** : https://hub.docker.com/r/hmes98318/music-disc  
-### put your Token into [`docker-compose.yml`](./docker-compose.yml)
-```yml
-version: '3.8'
-services:
-  music-disc:
-    image: hmes98318/music-disc:1.2.4
-    container_name: music-disc
-    restart: always
-    environment:
-      TOKEN: "your_token"
-      PREFIX: "+"
-      PLAYING: "+help | music"
-      COLOR: "#FFFFFF"
-      DEFAULTVOLUME: 50
-      MAXVOLUME: 100
-      AUTO_LEAVE: "true"
-      DISPLAY_VOICE_STATE: "true"
-    ports:
-      - 33333:33333
-```
-
-### Start the container  
-```
-docker-compose up -d
-```
-
-
-## Deploying with Replit  
-Watch it by clicking on the image down below  
-[![Music-Disc-with-Replit](https://img.youtube.com/vi/WH5aSHIebcc/0.jpg)](https://youtu.be/WH5aSHIebcc)  
-
-
+_For more commands see wiki (comming soon)_
