@@ -14,7 +14,7 @@ module.exports = {
         if (!args[0])
             return message.channel.send(`❌ พิมพ์ชื่อเพลงที่คุณต้องการหาหรือวาง URL ของเพลงที่ต้องการเปิด`);
 
-        const res = await client.player.search(args.join(' ')+' lyrics official', {
+        const res = await client.player.search(args.join(' '), {
             requestedBy: message.member,
             searchEngine: QueryType.AUTO
         });
