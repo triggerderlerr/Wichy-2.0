@@ -2,11 +2,11 @@
     "name": "Wichy",
     "prefix": ";",
     "playing": ";play (music)",
-    "color": null,
+    "color": null, //unused
     "defaultVolume": 50,
     "maxVolume": 200,
     "autoLeave": true,
     "displayVoiceState": true,
     "port": 30000,
-    "token": "ODM1MTYyODIyODg2Njg2NzUw.GyfdTQ.VIJmFkzqV8FG4GaBoDdN-qdKGwMJeCSa0Z01jE"
+    "token": "YOUR TOKEN HERE"
 }
