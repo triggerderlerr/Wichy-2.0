@@ -45,6 +45,7 @@ module.exports = {
 
         if (!queue.playing) {
             await queue.play();
+            mode = null;
             await wait(queue.tracks.length * 50);
             if (queue.tracks.length > 60 && !queue.playing) {
                 await queue.play();

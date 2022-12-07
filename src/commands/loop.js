@@ -11,7 +11,7 @@ module.exports = {
         const queue = client.player.getQueue(message.guild.id);
 
         if (!queue || !queue.playing) {
-            let mode = null;
+            mode = null;
             return message.channel.send(`❌ ไม่มีเพลงที่กำลังเล่นในขณะนี้`);
         }
 
