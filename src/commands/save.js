@@ -11,7 +11,7 @@ module.exports = {
 
         const timestamp = queue.getPlayerTimestamp();
         const trackDuration = timestamp.progress == 'Forever' ? 'Endless (Live)' : queue.current.duration;
-        let description = `ศิลปิน : **${queue.current.author}**\เวลา : **${trackDuration}**`;
+        let description = `ศิลปิน : **${queue.current.author}**\nเวลา : **${trackDuration}**`;
 
         if (!queue || !queue.playing)
             return message.channel.send(`❌ ไม่มีเพลงที่กำลังเล่นในขณะนี้`);

@@ -41,7 +41,12 @@ module.exports = {
 
         await message.react('👍');
 
-        await res.playlist ? queue.addTracks(res.tracks) : queue.addTrack(res.tracks[0]);
+        try {
+            await res.playlist ? queue.addTracks(res.tracks) : queue.addTrack(res.tracks[0]);
+        } catch (error) {
+            await client.player.deleteQueue(message.guild.id);
+            return message.channel.send(`❌ เกิดข้อผิดพลาดกับการเพิ่มเพลงในคิว`);
+        }
 
         if (!queue.playing) {
             await queue.play();
