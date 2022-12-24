@@ -78,7 +78,7 @@ module.exports = {
                     allowedMentions: { repliedUser: false }
                 });
                 queue.remove(index - 1);
-                return query.react('👍');
+                return message.react('👍');
             }
         } catch (error) {
             message.channel.send('❌ เกิดข้อผิดพลาดกับคำสั่งนี้');

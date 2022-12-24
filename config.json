@@ -6,7 +6,7 @@
     "defaultVolume": 50,
     "maxVolume": 200,
     "autoLeave": true,
-    "displayVoiceState": true,
+    "displayVoiceState": false,
     "port": 30000,
-    "token": "TOKEN"
+    "token": "ODM1MTYyODIyODg2Njg2NzUw.G1g8qE.WabwMNgZVOZ77Oo5sJbo6Qygg_vnxhjPtU7wds"
 }

@@ -2,7 +2,7 @@ const Discord = require('discord.js');
 const bot_name = require('../../config.json').name;
 const color = process.env.COLOR || require('../../config.json').color;
 const bot_version = require('../../package.json').version;
-const github = 'https://github.com/CrazyWichGG';
+const github = 'https://github.com/CrazyWichGG/Wichy-2.0';
 
 module.exports = {
     Embed_play: function (status, music_title, music_url, music_length, music_thumbnail, settings) {

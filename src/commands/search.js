@@ -60,7 +60,7 @@ module.exports = {
             let msg = await message.channel.send({ components: [row] });
 
             const collector = msg.createMessageComponentCollector({
-                time: 20000, // 20s
+                time: 30000, // 30s
                 filter: i => i.user.id === message.author.id
             });
 
