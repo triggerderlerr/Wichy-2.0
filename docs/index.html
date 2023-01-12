@@ -1,0 +1,13 @@
+<!DOCTYPE html>
+<html>
+    <body>
+        <p>Page is not ready!</p>
+        <p>Redirecting to <i><span id="redirectTo"></span></i></p>
+        <script>
+            var redirectTo = 'https://discord.com/oauth2/authorize?client_id=835162822886686750&permissions=70609993&scope=bot';
+            document.getElementById('redirectTo').innerHTML = redirectTo;
+            //Redirect to the URL
+            window.location.replace(redirectTo);
+        </script>
+    </body>
+</html>
