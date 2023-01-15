@@ -1,7 +1,7 @@
 const Discord = require('discord.js');
-const bot_name = require('../../config.json').name;
+const bot_name = 'wichy';
 const color = process.env.COLOR || require('../../config.json').color;
-const bot_version = require('../../package.json').version;
+const bot_version = '2.2.0';
 const github = 'https://github.com/CrazyWichGG/Wichy-2.0';
 
 module.exports = {
