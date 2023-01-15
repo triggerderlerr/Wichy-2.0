@@ -6,7 +6,7 @@ To see more please [click here](https://github.com/hmes98318/Music-Disc)
 
 ## Invite
 
-Or if you want to invite my bot then [click here](https://bot.crazywichgg.tk/en)
+Or if you want to invite my bot then [click here](https://crazywichgg.github.io/wichy)
 
 PS: _This bot is in Thai language_ 
 
