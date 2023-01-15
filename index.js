@@ -5,7 +5,8 @@ const { Client, GatewayIntentBits, Partials, Collection} = require('discord.js')
 const { Player } = require('discord-player');
 const express = require('express')
 require('lyrics-finder');
-require('dotenv').config();
+require('@chatandshare/random-song');
+//require('dotenv').config();
 
 const config = require('./config.json');
 const embed = require('./src/embeds/embeds');

@@ -1,40 +1,25 @@
 const { QueryType } = require('discord-player');
+const RandomSong = require('@chatandshare/random-song');
+const random = new RandomSong('7f47dd89ef61e23baebb59e009be88e3');
 
 function wait(ms) {
     return new Promise((resolve) => setTimeout(() => resolve(), ms));
 }
 
 module.exports = {
-    name: 'play',
-    aliases: ['p'],
-    utilisation: '{prefix}play [song name/URL]',
+    name: 'random',
+    aliases: ['rd'],
+    utilisation: '{prefix}random',
     voiceChannel: true,
 
     async execute(client, message, args) {
-
-        function checkLastArgs(text) {
-            if (args[args.length - 1] === text.toString()) {
-                return true;
-            } else {
-                return false;
-            }
-        }
-
         try {
-            if (!args[0])
-                return message.channel.send(`❌ พิมพ์ชื่อเพลงที่คุณต้องการหาหรือวาง URL ของเพลงที่ต้องการเปิด`);
-            
-            if (checkLastArgs('--debug')) {
-                res = await client.player.search(args.slice(0,-1).join(' '), {
-                    requestedBy: message.member,
-                    searchEngine: QueryType.AUTO
-                });
-            } else {
-                res = await client.player.search(args.join(' '), {
-                    requestedBy: message.member,
-                    searchEngine: QueryType.AUTO
-                });
-            }
+            randomedSong = await random.song();
+
+            res = await client.player.search(randomedSong.track_name + randomedSong.artist_name, {
+                requestedBy: message.member,
+                searchEngine: QueryType.AUTO
+            });
 
             if (!res || !res.tracks.length)
                 return message.channel.send(`❌ ไม่พบผลลัพธ์`);
@@ -78,8 +63,9 @@ module.exports = {
         } catch (error) {
             message.channel.send(`❌ เกิดข้อผิดพลาดกับคำสั่ง`);
 
-            if (checkLastArgs('--debug'))
+            if (args[0] === '--debug') {
                 message.channel.send(`📄 Debug Info: \`\`\`${error.stack}\`\`\``);
+            }
 
             return
         }
