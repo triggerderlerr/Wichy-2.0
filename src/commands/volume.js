@@ -21,7 +21,7 @@ module.exports = {
             return message.channel.send(`❌ ระดับเสียงที่ต้องการเปลี่ยนคือระดับเสียงปัจจุบัน`);
 
         if (vol < 0 || vol > maxVolume)
-            return message.channel.send(`❌ | **พิมพ์ตัวเลขระหว่าง \`1\` ถึง \`${maxVolume}\` เพื่อเปลี่ยนระดับเสียง**`);
+            return message.channel.send(`❌ **พิมพ์ตัวเลขระหว่าง \`1\` ถึง \`${maxVolume}\` เพื่อเปลี่ยนระดับเสียง**`);
 
         const success = queue.setVolume(vol);
 

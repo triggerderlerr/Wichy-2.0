@@ -13,6 +13,15 @@ module.exports = {
     voiceChannel: true,
 
     async execute(client, message, args) {
+
+        function checkLastArgs(text) {
+            if (args[args.length - 1] === text.toString()) {
+                return true;
+            } else {
+                return false;
+            }
+        }
+
         try {
             randomedSong = await random.song();
 
@@ -53,17 +62,12 @@ module.exports = {
             if (!queue.playing) {
                 await queue.play();
                 mode = null;
-                await wait(queue.tracks.length * 50); //wait for queue to be filled (the time depends on the number of tracks)
-
-                //retry to play if queue is empty
-                if (queue.tracks.length > 60 && !queue.playing) {
-                    await queue.play();
-                }
             }
+            
         } catch (error) {
             message.channel.send(`❌ เกิดข้อผิดพลาดกับคำสั่ง`);
 
-            if (args[0] === '--debug') {
+            if (checkLastArgs('--debug')) {
                 message.channel.send(`📄 Debug Info: \`\`\`${error.stack}\`\`\``);
             }
 
