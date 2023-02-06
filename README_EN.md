@@ -1,3 +1,9 @@
+```
+WARNING: THIS BOT IS NOT SUPPORT ENGLISH LANGUAGE AT THIS TIME!
+
+All of the documentations for this bot will be Thai language as long as the multiple language feature does not exist.
+```
+
 # Wichy 2.0
 
 Wichy 2.0 was forked from Music Disc by hmes98318, I fork this bot because I want to use them in my and my friend's discord server. And for educational purposes only.
