@@ -7,6 +7,5 @@
     "maxVolume": 200,
     "autoLeave": true,
     "displayVoiceState": false,
-    "port": 30000,
-    "token": "TOKEN"
+    "port": 30000
 }

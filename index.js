@@ -6,7 +6,7 @@ const { Player } = require('discord-player');
 const express = require('express')
 require('lyrics-finder');
 require('@chatandshare/random-song');
-//require('dotenv').config();
+require('dotenv').config();
 
 const config = require('./config.json');
 const embed = require('./src/embeds/embeds');
@@ -127,7 +127,7 @@ const loadCommands = () => {
 Promise.all([loadEvents(), loadFramework(), loadCommands()])
     .then(function () {
         console.log('\x1B[32m*** All loaded successfully ***\x1B[0m');
-        client.login(config.token);
+        client.login(process.env.TOKEN);
     });
 
 
@@ -138,11 +138,11 @@ const settings = (queue, song) =>
 
 
 player.on('error', (queue, error) => {
-    console.log(`There was a problem with the song queue => ${error.message}`);
+    console.log(`There was a problem with the song queue => ${error.message} \n ${error.stack}`);
 });
 
 player.on('connectionError', (queue, error) => {
-    console.log(`I'm having trouble connecting => ${error.message}`);
+    console.log(`I'm having trouble connecting => ${error.message} \n ${error.stack}`);
 });
 
 player.on('trackStart', (queue, track) => {
