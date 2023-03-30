@@ -1,18 +1,28 @@
 module.exports = {
     name: 'shuffle',
     aliases: ['sh'],
-    utilisation: '{prefix}shuffle',
+    description: 'จัดเรียงเพลงในคิวแบบสุ่ม',
+    usage: 'shuffle',
     voiceChannel: true,
+    options: [],
 
-    execute(client, message) {
-        const queue = client.player.getQueue(message.guild.id);
+    async execute(client, message) {
+        const queue = client.player.nodes.get(message.guild.id);
 
-        if (!queue || !queue.playing) return message.channel.send('❌ ไม่มีเพลงที่กำลังเล่นในขณะนี้');
+        if (!queue || !queue.isPlaying())
+            return message.reply({ content: `❌ ไม่มีเพลงที่กำลังเล่นในขณะนี้`, allowedMentions: { repliedUser: false } });
 
-        if (!queue.tracks[0]) return message.channel.send(`❌ ไม่มีเพลงอื่นในคิว`);
+        queue.tracks.shuffle();
+        return message.react('👍');
+    },
 
-        queue.shuffle();
-        return message.react('🔀');
+    slashExecute(client, interaction) {
+        const queue = client.player.nodes.get(interaction.guild.id);
 
-    }
+        if (!queue || !queue.isPlaying())
+            return interaction.reply({ content: `❌ ไม่มีเพลงที่กำลังเล่นในขณะนี้`, allowedMentions: { repliedUser: false } });
+
+        queue.tracks.shuffle();
+        return interaction.reply('✅ จัดเรียงเพลงในคิวแบบสุ่มแล้ว');
+    },
 };

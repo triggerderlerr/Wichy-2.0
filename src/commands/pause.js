@@ -1,17 +1,28 @@
 module.exports = {
     name: 'pause',
     aliases: ['pa'],
-    utilisation: '{prefix}pause',
+    description: 'หยุดเพลงชั่วคราว',
+    usage: 'pause',
     voiceChannel: true,
+    options: [],
 
     execute(client, message) {
-        const queue = client.player.getQueue(message.guild.id);
+        const queue = client.player.nodes.get(message.guild.id);
 
-        if (!queue || !queue.playing)
-            return message.channel.send(`❌ ไม่มีเพลงที่กำลังเล่นในขณะนี้`);
+        if (!queue || !queue.isPlaying())
+            return message.reply({ content: `❌ ไม่มีเพลงที่กำลังเล่นในขณะนี้`, allowedMentions: { repliedUser: false } });
 
-        const success = queue.setPaused(true);
+        const success = queue.node.pause();
+        return success ? message.react('⏸️') : message.reply({ content: `❌ มีบางอย่างผิดพลาด`, allowedMentions: { repliedUser: false } });
+    },
 
-        return success ? message.react('⏸️') : message.channel.send(`❌ มีบางอย่างผิดพลาด`);
+    slashExecute(client, interaction) {
+        const queue = client.player.nodes.get(interaction.guild.id);
+
+        if (!queue || !queue.isPlaying())
+            return interaction.reply({ content: `❌ ไม่มีเพลงที่กำลังเล่นในขณะนี้`, allowedMentions: { repliedUser: false } });
+
+        const success = queue.node.pause();
+        return success ? interaction.reply("⏸️ หยุดเพลงชั่วคราวแล้ว") : interaction.reply({ content: `❌ มีบางอย่างผิดพลาด`, allowedMentions: { repliedUser: false } });
     },
 };

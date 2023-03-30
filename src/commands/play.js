@@ -1,87 +1,125 @@
 const { QueryType } = require('discord-player');
 
-function wait(ms) {
-    return new Promise((resolve) => setTimeout(() => resolve(), ms));
-}
 
 module.exports = {
     name: 'play',
     aliases: ['p'],
-    utilisation: '{prefix}play [song name/URL]',
+    description: 'ใส่ชื่อเพลงหรือ URL เพลงที่ต้องการจะเล่น',
+    usage: 'play <URL/song name>',
     voiceChannel: true,
+    options: [
+        {
+            name: "search",
+            description: "ชื่อเพลงหรือ URL ของเพลงที่ต้องการเล่น",
+            type: 3,
+            required: true
+        }
+    ],
 
     async execute(client, message, args) {
+        if (!args[0])
+            return message.reply({ content: `❌ พิมพ์ชื่อเพลงที่คุณต้องการหาหรือวาง URL ของเพลงที่ต้องการเปิด`, allowedMentions: { repliedUser: false } });
 
-        function checkLastArgs(text) {
-            if (args[args.length - 1] === text.toString()) {
-                return true;
-            } else {
-                return false;
-            }
-        }
 
-        try {
-            if (!args[0])
-                return message.channel.send(`❌ พิมพ์ชื่อเพลงที่คุณต้องการหาหรือวาง URL ของเพลงที่ต้องการเปิด`);
-            
-            if (checkLastArgs('--debug')) {
-                res = await client.player.search(args.slice(0,-1).join(' '), {
-                    requestedBy: message.member,
-                    searchEngine: QueryType.AUTO
-                });
-            } else {
-                res = await client.player.search(args.join(' '), {
-                    requestedBy: message.member,
-                    searchEngine: QueryType.AUTO
-                });
-            }
-
-            if (!res || !res.tracks.length)
-                return message.channel.send(`❌ ไม่พบผลลัพธ์`);
-
-            const queue = await client.player.createQueue(message.guild, {
-                metadata: message.channel,
-                leaveOnEnd: client.config.autoLeave,
-                leaveOnStop: client.config.autoLeave,
-                leaveOnEmpty: client.config.autoLeave,
-                initialVolume: client.config.defaultVolume,
-                ytdlOptions: client.config.ytdlOptions
+        const results = await client.player.search(args.join(' '))
+            .catch((error) => {
+                console.log(error);
+                return message.reply({ content: `❌ เกิดปัญหาบางอย่างขึ้น โปรดลองอีกครั้งภายหลัง`, allowedMentions: { repliedUser: false } });
             });
 
-            try {
-                if (!queue.connection)
-                    await queue.connect(message.member.voice.channel);
-            } catch {
-                await client.player.deleteQueue(message.guild.id);
-                return message.channel.send(`❌ ไม่สามารถเข้าร่วมห้องสนทนาได้`);
+        if (!results || !results.hasTracks())
+            return message.reply({ content: `❌ ไม่พบผลลัพธ์`, allowedMentions: { repliedUser: false } });
+
+
+        /*
+        const queue = await client.player.play(message.member.voice.channel.id, results, {
+            nodeOptions: {
+                metadata: {
+                    channel: message.channel,
+                    client: message.guild.members.me,
+                    requestedBy: message.user
+                },
+                selfDeaf: true,
+                leaveOnEmpty: client.config.autoLeave,
+                leaveOnEnd: client.config.autoLeave,
+                leaveOnEmptyCooldown: client.config.autoLeaveCooldown,
+                leaveOnEndCooldown: client.config.autoLeaveCooldown,
+                volume: client.config.defaultVolume,
             }
+        }); // The two play methods are the same
+        */
+        const queue = await client.player.nodes.create(message.guild, {
+            metadata: {
+                channel: message.channel,
+                client: message.guild.members.me,
+                requestedBy: message.user
+            },
+            selfDeaf: true,
+            leaveOnEmpty: client.config.autoLeave,
+            leaveOnEnd: client.config.autoLeave,
+            leaveOnEmptyCooldown: client.config.autoLeaveCooldown,
+            leaveOnEndCooldown: client.config.autoLeaveCooldown,
+            volume: client.config.defaultVolume,
+        });
 
-            await message.react('👍');
-
-            try {
-                await res.playlist ? queue.addTracks(res.tracks) : queue.addTrack(res.tracks[0]);
-            } catch (error) {
-                await client.player.deleteQueue(message.guild.id);
-                throw error;
-            }
-
-            if (!queue.playing) {
-                await queue.play();
-                mode = null;
-                await wait(queue.tracks.length * 50); //wait for queue to be filled (the time depends on the number of tracks)
-
-                //retry to play if queue is empty
-                if (queue.tracks.length > 60 && !queue.playing) {
-                    await queue.play();
-                }
-            }
+        try {
+            if (!queue.connection)
+                await queue.connect(message.member.voice.channel);
         } catch (error) {
-            message.channel.send(`❌ เกิดข้อผิดพลาดกับคำสั่ง`);
-
-            if (checkLastArgs('--debug'))
-                message.channel.send(`📄 Debug Info: \`\`\`${error.stack}\`\`\``);
-
-            return
+            console.log(error);
+            if (!queue?.deleted) queue?.delete();
+            return message.reply({ content: `❌ ไม่สามารถเข้าร่วมห้องสนทนาได้`, allowedMentions: { repliedUser: false } });
         }
+
+        results.playlist ? queue.addTrack(results.tracks) : queue.addTrack(results.tracks[0]);
+
+        if (!queue.isPlaying()) {
+            await queue.node.play();
+        }
+
+        return message.react('👍');
+    },
+
+    async slashExecute(client, interaction) {
+
+        const results = await client.player.search(interaction.options.getString("search"))
+            .catch((error) => {
+                console.log(error);
+                return interaction.reply({ content: `❌ เกิดปัญหาบางอย่างขึ้น โปรดลองอีกครั้งภายหลัง`, allowedMentions: { repliedUser: false } });
+            });
+
+        if (!results || !results.tracks.length)
+            return interaction.reply({ content: `❌ ไม่พบผลลัพธ์`, allowedMentions: { repliedUser: false } });
+
+
+        const queue = await client.player.nodes.create(interaction.guild, {
+            metadata: {
+                channel: interaction.channel,
+                client: interaction.guild.members.me,
+                requestedBy: interaction.user
+            },
+            selfDeaf: true,
+            leaveOnEmpty: client.config.autoLeave,
+            leaveOnEnd: client.config.autoLeave,
+            leaveOnEmptyCooldown: client.config.autoLeaveCooldown,
+            leaveOnEndCooldown: client.config.autoLeaveCooldown,
+            volume: client.config.defaultVolume,
+        });
+
+        try {
+            if (!queue.connection)
+                await queue.connect(interaction.member.voice.channel);
+        } catch (error) {
+            console.log(error);
+            if (!queue?.deleted) queue?.delete();
+            return interaction.reply({ content: `❌ ไม่สามารถเข้าร่วมห้องสนทนาได้`, allowedMentions: { repliedUser: false } });
+        }
+
+        results.playlist ? queue.addTrack(results.tracks) : queue.addTrack(results.tracks[0]);
+
+        interaction.reply({ content: `✅ เพิ่มเพลงเข้าคิวแล้ว`, allowedMentions: { repliedUser: false } });
+
+        if (!queue.isPlaying())
+            await queue.node.play();
     },
 };

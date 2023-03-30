@@ -1,17 +1,38 @@
 module.exports = {
     name: 'stop',
-    aliases: ['leave'],
-    utilisation: '{prefix}stop',
+    aliases: [],
+    description: 'หยุดเพลงและออกจากห้องสนทนา',
+    usage: 'stop',
     voiceChannel: true,
+    options: [],
 
     execute(client, message) {
-        const queue = client.player.getQueue(message.guild.id);
+        const queue = client.player.nodes.get(message.guild.id);
 
-        if (!queue || !queue.playing)
-            return message.channel.send(`❌ ไม่มีเพลงที่กำลังเล่นในขณะนี้`);
+        if (!queue || !queue.isPlaying())
+            return message.reply({ content: `❌ ไม่มีเพลงที่กำลังเล่นในขณะนี้`, allowedMentions: { repliedUser: false } });
 
-        queue.destroy();
+        if (!queue.deleted) {
+            mode = 0;
+            queue.setRepeatMode(mode);
+            queue.delete();
+        }
 
         return message.react('👍');
+    },
+
+    slashExecute(client, interaction) {
+        const queue = client.player.nodes.get(interaction.guild.id);
+
+        if (!queue || !queue.isPlaying())
+            return interaction.reply({ content: `❌ ไม่มีเพลงที่กำลังเล่นในขณะนี้`, allowedMentions: { repliedUser: false } });
+
+        if (!queue.deleted) {
+            mode = 0;
+            queue.setRepeatMode(mode);
+            queue.delete();
+        }
+
+        return interaction.reply('✅ บอทออกจากห้องสนทนาแล้ว');
     },
 };

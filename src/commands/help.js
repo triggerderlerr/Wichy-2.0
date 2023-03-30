@@ -4,15 +4,80 @@ module.exports = {
     name: 'help',
     aliases: ['h'],
     showHelp: false,
-    utilisation: '{prefix}help',
+    description: 'แสดงคำสั่งทั้งหมด',
+    usage: 'help <command>',
+    options: [
+        {
+            name: "command",
+            description: "แสดงการใช้งานของคำสั่งที่ระบุ",
+            type: 3,
+            required: false,
+        }
+    ],
 
     execute(client, message, args) {
+        const prefix = client.config.prefix;
 
-        let title = client.user.username;
-        let thumbnail = client.user.displayAvatarURL();
-        const commands = client.commands.filter(x => x.showHelp !== false);
-        let description = `**คำสั่งที่ใช้งานได้**\n` + commands.map(x => `\`${x.name}${x.aliases[0] ? ` (${x.aliases.map(y => y).join(', ')})\`` : '\`'}`).join(' | ');
+        if (!args[0]) {
+            let title = client.user.username;
+            let thumbnail = client.user.displayAvatarURL();
+            const commands = client.commands.filter(x => x.showHelp !== false);
 
-        return message.channel.send({ embeds: [embed.Embed_help(title, thumbnail, description)] });
+            let description = `**คำสั่งที่ใช้งานได้**\n` + commands.map(x => `• \`${prefix}${x.name}${x.aliases[0] ? ` (${x.aliases.map(y => y).join(', ')})\`` : '\`'}`).join('\n');
+
+            return message.reply({ embeds: [embed.Embed_help(title, thumbnail, description)], allowedMentions: { repliedUser: false } });
+        }
+        else {
+            let helpCmd = args[0];
+            const commands = client.commands.filter(x => x.showHelp !== false);
+            //console.log('helpCmd', helpCmd);
+
+            let found = false;
+            found = commands.find(x => {
+                if (helpCmd === x.name || x.aliases.includes(helpCmd)) {
+                    let command = x.name
+                    let description = `${x.description}\n\`\`\`${prefix}${x.usage}\`\`\``;
+
+                    message.reply({ embeds: [embed.Embed_help2(command, description)], allowedMentions: { repliedUser: false } });
+                    return true;
+                }
+            });
+
+            if (!Boolean(found)) return message.reply({ content: '❌ ไม่พบคำสั่งดังกล่าว', allowedMentions: { repliedUser: false } });
+        }
+    },
+
+    slashExecute(client, interaction) {
+        const prefix = client.config.prefix;
+        const command = interaction.options.getString("command");
+
+        if (!command) {
+            let title = client.user.username;
+            let thumbnail = client.user.displayAvatarURL();
+            const commands = client.commands.filter(x => x.showHelp !== false);
+
+            let description = `**คำสั่งที่ใช้งานได้**\n` + commands.map(x => `• \`${prefix}${x.name}${x.aliases[0] ? ` (${x.aliases.map(y => y).join(', ')})\`` : '\`'}`).join('\n');
+
+            return interaction.reply({ embeds: [embed.Embed_help(title, thumbnail, description)], allowedMentions: { repliedUser: false } });
+
+        }
+        else {
+            let helpCmd = command;
+            const commands = client.commands.filter(x => x.showHelp !== false);
+            //console.log('helpCmd', helpCmd);
+
+            let found = false;
+            found = commands.find(x => {
+                if (helpCmd === x.name || x.aliases.includes(helpCmd)) {
+                    let command = x.name
+                    let description = `${x.description}\n\`\`\`${prefix}${x.usage}\`\`\``;
+
+                    interaction.reply({ embeds: [embed.Embed_help2(command, description)], allowedMentions: { repliedUser: false } });
+                    return true;
+                }
+            });
+
+            if (!Boolean(found)) return interaction.reply({ content: '❌ ไม่พบคำสั่งดังกล่าว', allowedMentions: { repliedUser: false } });
+        }
     },
 };

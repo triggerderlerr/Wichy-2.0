@@ -1,29 +1,56 @@
 const embed = require('../embeds/embeds');
 
+
 module.exports = {
     name: 'save',
-    aliases: ['sv'],
-    utilisation: '{prefix}save',
+    aliases: [],
+    description: 'บันทึกเพลงที่กำลังเล่นอยู่ในข้อความส่วนตัว',
+    usage: 'save',
     voiceChannel: true,
+    options: [],
 
     async execute(client, message) {
-        const queue = client.player.getQueue(message.guild.id);
+        const queue = client.player.nodes.get(message.guild.id);
 
-        const timestamp = queue.getPlayerTimestamp();
-        const trackDuration = timestamp.progress == 'Forever' ? 'Endless (Live)' : queue.current.duration;
-        let description = `ศิลปิน : **${queue.current.author}**\nเวลา : **${trackDuration}**`;
-
-        if (!queue || !queue.playing)
-            return message.channel.send(`❌ ไม่มีเพลงที่กำลังเล่นในขณะนี้`);
+        if (!queue || !queue.isPlaying())
+            return message.reply({ content: `❌ ไม่มีเพลงที่กำลังเล่นในขณะนี้`, allowedMentions: { repliedUser: false } });
 
 
-        message.author.send({ embeds: [embed.Embed_save(queue.current.title, queue.current.url, queue.current.thumbnail, description)] })
-            //message.author.send(`Registered track: **${queue.current.title}** | ${queue.current.author}, Saved server: **${message.guild.name}** ✅`)
+        const track = queue.currentTrack;
+        const timestamp = queue.node.getTimestamp();
+        const trackDuration = timestamp.progress == 'Forever' ? 'Endless (Live)' : track.duration;
+        let description = `ศิลปิน : **${track.author}**\nเวลา : **${trackDuration}**`;
+
+        message.author.send({ embeds: [embed.Embed_save(track.title, track.url, track.thumbnail, description)] })
+            //message.author.send(`Registered track: **${track.title}** | ${track.author}, Saved server: **${message.guild.name}** ✅`)
             .then(() => {
                 message.react('👍');
-            }).catch(e => {
-                console.log(e);
+            })
+            .catch(error => {
+                console.log('error: ' + error);
                 message.react('❌');
+            });
+    },
+
+    async slashExecute(client, interaction) {
+        const queue = client.player.nodes.get(interaction.guild.id);
+
+        if (!queue || !queue.isPlaying())
+            return interaction.reply({ content: `❌ ไม่มีเพลงที่กำลังเล่นในขณะนี้`, allowedMentions: { repliedUser: false } });
+
+
+        const track = queue.currentTrack;
+        const timestamp = queue.node.getTimestamp();
+        const trackDuration = timestamp.progress == 'Forever' ? 'Endless (Live)' : track.duration;
+        let description = `ศิลปิน : **${track.author}**\nเวลา : **${trackDuration}**`;
+
+        interaction.user.send({ embeds: [embed.Embed_save(track.title, track.url, track.thumbnail, description)] })
+            .then(() => {
+                interaction.reply("✅ เพลงถูกส่งไปยังข้อความส่วนตัวแล้ว")
+            })
+            .catch(error => {
+                console.log('error: ' + error);
+                interaction.reply("❌ ไม่สามารถส่งข้อความไปยังข้อความส่วนตัวได้")
             });
     },
 };

@@ -1,17 +1,28 @@
 module.exports = {
     name: 'resume',
     aliases: ['re'],
-    utilisation: '{prefix}resume',
+    description: 'เล่นเพลงที่หยุดชั่วคราวต่อ',
+    usage: 'resume',
     voiceChannel: true,
+    options: [],
 
     execute(client, message) {
-        const queue = client.player.getQueue(message.guild.id);
+        const queue = client.player.nodes.get(message.guild.id);
 
         if (!queue)
-            return message.channel.send(`❌ ไม่มีเพลงที่กำลังเล่นในขณะนี้`);
+            return message.reply({ content: `❌ ไม่มีเพลงที่กำลังเล่นในขณะนี้`, allowedMentions: { repliedUser: false } });
 
-        const success = queue.setPaused(false);
+        const success = queue.node.resume();
+        return success ? message.react('▶️') : message.reply({ content: `❌ มีบางอย่างผิดพลาด`, allowedMentions: { repliedUser: false } });
+    },
 
-        return success ? message.react('▶️') : message.channel.send(`❌ มีบางอย่างผิดพลาด`);
+    slashExecute(client, interaction) {
+        const queue = client.player.nodes.get(interaction.guild.id);
+
+        if (!queue)
+            return interaction.reply({ content: `❌ ไม่มีเพลงที่กำลังเล่นในขณะนี้`, allowedMentions: { repliedUser: false } });
+
+        const success = queue.node.resume();
+        return success ? interaction.reply("▶️ เล่นเพลงต่อแล้ว") : interaction.reply({ content: `❌ มีบางอย่างผิดพลาด`, allowedMentions: { repliedUser: false } });
     },
 };
