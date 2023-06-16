@@ -218,6 +218,7 @@ function sendErrorToDM(error, error_type) {
     try {client.users.cache.get(ENV.ADMIN_ID).send(`**Unexpected Error Detected** ❌\n${error_type}:\`\`\`${error.stack}\`\`\``);} catch {}
 }
 
+
 process.on('uncaughtException', err => {
     console.log('Uncaught Exception:', err.stack);
     sendErrorToDM(err, 'Uncaught Exception');
