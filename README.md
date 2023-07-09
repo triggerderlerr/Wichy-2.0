@@ -1,4 +1,4 @@
-English version please see [README_EN.md](https://github.com/CrazyWichGG/Wichy-2.0/blob/main/README.en.md)
+English version please see [README.en.md](https://github.com/CrazyWichGG/Wichy-2.0/blob/main/README.en.md)
 
 # Wichy 2.0
 
