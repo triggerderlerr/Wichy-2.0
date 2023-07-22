@@ -3,7 +3,6 @@ const { exec } = require('child_process');
 const Discord = require('discord.js');
 const package = require('../../package.json');
 
-
 const color = { white: '\x1B[0m', cyan: '\x1B[36m' };
 
 
@@ -38,7 +37,9 @@ module.exports = async (client) => {
         }
     }));
 
-    client.user.setActivity(client.config.playing);
+    setInterval(() => {
+        client.user.setActivity(client.config.playing);
+    }, 3600000);
     console.log(`>>> Logged in as ${client.user.username}`);
 };
 

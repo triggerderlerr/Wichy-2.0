@@ -190,7 +190,7 @@ const settings = (queue, song) =>
 
 
 player.events.on('playerStart', (queue, track) => {
-    //if (queue.repeatMode !== 0) return;
+    //if (queue.repeatMode !== 0) return; //--> If you don't want the bot to send a message when the song is repeated
     queue.metadata.channel.send({ embeds: [embed.Embed_play("กำลังเล่น", track.title, track.url, track.duration, track.thumbnail, settings(queue))] });
 });
 
@@ -209,13 +209,14 @@ player.events.on('error', (queue, error) => {
 });
 
 player.events.on('emptyChannel', (queue) => {
-    if (!client.config.autoLeave)
-        queue.node.stop();
+    if (!client.config.autoLeave) {
+        try{queue.stop();} catch {} //--> Prevent bot from sending error (AbortError) since it still work fine
+    }
 });
 
 //Error Handling (Catch unexpected errors and send to your DM)
 function sendErrorToDM(error, error_type) {
-    try {client.users.cache.get(ENV.ADMIN_ID).send(`**Unexpected Error Detected** ❌\n${error_type}:\`\`\`${error.stack}\`\`\``);} catch {}
+    try {client.users.cache.get(ENV.ADMIN_ID).send(`**Unexpected Error Detected** ❌ (${error_type})\`\`\`${error.stack}\`\`\``);} catch {}
 }
 
 
