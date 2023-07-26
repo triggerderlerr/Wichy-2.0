@@ -37,6 +37,7 @@ module.exports = async (client) => {
         }
     }));
 
+    client.user.setActivity(client.config.playing);
     setInterval(() => {
         client.user.setActivity(client.config.playing);
     }, 3600000);
