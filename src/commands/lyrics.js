@@ -54,26 +54,27 @@ module.exports = {
                 return interaction.reply('❌ ไม่มีเพลงที่กำลังเล่นในขณะนี้');
             
             try {
+                interaction.reply('🔍 กำลังค้นหาเนื้อเพลง...');
                 const lyrics = await lyricsFinder(queue.current.title, '');
                 if (lyrics.trim().length === 0) {
                     throw error;
                 }
-                return interaction.reply({ embeds: [embed.Embed_lyrics(queue.current.title, lyrics)] });
+                return interaction.editReply({ embeds: [embed.Embed_lyrics(queue.current.title, lyrics)] });
             } catch (error) {
-                return interaction.reply('❌ ไม่พบเนื้อเพลง');
+                return interaction.editReply('❌ ไม่พบเนื้อเพลง');
             }
         }
 
         try {
+            interaction.reply('🔍 กำลังค้นหาเนื้อเพลง...');
             const Title = interaction.options.getString('search');
             const lyrics = await lyricsFinder(Title, '');
             if (lyrics.trim().length === 0) {
                 throw error;
             }
-            return interaction.reply({ embeds: [embed.Embed_lyrics(Title, lyrics)] });
+            return interaction.editReply({ embeds: [embed.Embed_lyrics(Title, lyrics)] });
         } catch (error) {
-            console.log(error.stack);
-            return interaction.reply('❌ ไม่พบเนื้อเพลง');
+            return interaction.editReply('❌ ไม่พบเนื้อเพลง');
         }
     },
 };

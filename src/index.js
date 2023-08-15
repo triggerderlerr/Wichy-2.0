@@ -225,7 +225,12 @@ process.on('uncaughtException', err => {
     sendErrorToDM(err, 'Uncaught Exception');
 });
   
-process.on('unhandledRejection', (reason, promise) => {
-    console.log('Unhandled Rejection:', reason.stack);
-    sendErrorToDM(reason, 'Unhandled Rejection');
+process.on('unhandledRejection', reason => {
+    if (reason != "DiscordAPIError[50007]: Cannot send messages to this user") {
+        console.log('Unhandled Rejection:', reason.stack);
+        sendErrorToDM(reason, 'Unhandled Rejection');
+    } else {
+        console.log('CANNOT SEND MESSAGES TO USER');
+        console.log('Unhandled Rejection:', reason.stack);
+    }
 });
