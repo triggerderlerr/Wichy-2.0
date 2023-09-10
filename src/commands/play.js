@@ -1,4 +1,4 @@
-const { QueryType } = require('discord-player');
+const { URL } = require('url');
 
 
 module.exports = {
@@ -17,19 +17,30 @@ module.exports = {
     ],
 
     async execute(client, message, args) {
+
         if (!args[0])
             return message.reply({ content: `❌ พิมพ์ชื่อเพลงที่คุณต้องการหาหรือวาง URL ของเพลงที่ต้องการเปิด`, allowedMentions: { repliedUser: false } });
+        
+        const userInput = args.join(' ');
+        let queryType = '';
 
+        await client.player.extractors.loadDefault();
 
-        const results = await client.player.search(args.join(' '))
+        if (isValidUrl(userInput)) queryType = client.config.urlQuery;
+        else queryType = client.config.textQuery;
+
+        const results = await client.player.search(userInput, {
+            requestedBy: message.member,
+            searchEngine: queryType
+        })
             .catch((error) => {
                 console.log(error);
                 return message.reply({ content: `❌ เกิดปัญหาบางอย่างขึ้น โปรดลองอีกครั้งภายหลัง`, allowedMentions: { repliedUser: false } });
             });
 
-        if (!results || !results.hasTracks())
+        if (!results || !results.hasTracks()) {
             return message.reply({ content: `❌ ไม่พบผลลัพธ์`, allowedMentions: { repliedUser: false } });
-
+        }
 
         /*
         const queue = await client.player.play(message.member.voice.channel.id, results, {
@@ -74,7 +85,11 @@ module.exports = {
         results.playlist ? queue.addTrack(results.tracks) : queue.addTrack(results.tracks[0]);
 
         if (!queue.isPlaying()) {
-            await queue.node.play();
+            await queue.node.play().catch((error) => {
+                console.log(error);
+                //if (!queue?.deleted) queue?.delete();
+                return message.reply({ content: `❌ ไม่สามารถเล่นเพลงได้ โปรดลองอีกครั้งภายหลัง`, allowedMentions: { repliedUser: false } });
+            });
         }
 
         return message.react('👍');
@@ -82,7 +97,18 @@ module.exports = {
 
     async slashExecute(client, interaction) {
 
-        const results = await client.player.search(interaction.options.getString("search"))
+        const userInput =interaction.options.getString("search");
+        let queryType = '';
+
+        await client.player.extractors.loadDefault();
+
+        if (isValidUrl(userInput)) queryType = client.config.urlQuery;
+        else queryType = client.config.textQuery;
+
+        const results = await client.player.search(userInput, {
+            requestedBy: interaction.member,
+            searchEngine: queryType
+        })
             .catch((error) => {
                 console.log(error);
                 return interaction.reply({ content: `❌ เกิดปัญหาบางอย่างขึ้น โปรดลองอีกครั้งภายหลัง`, allowedMentions: { repliedUser: false } });
@@ -119,7 +145,21 @@ module.exports = {
 
         interaction.reply({ content: `✅ เพิ่มเพลงเข้าคิวแล้ว`, allowedMentions: { repliedUser: false } });
 
-        if (!queue.isPlaying())
-            await queue.node.play();
+        if (!queue.isPlaying()) {
+            await queue.node.play().catch((error) => {
+                console.log(error);
+                //if (!queue?.deleted) queue?.delete();
+                return interaction.followUp({ content: `❌ ไม่สามารถเล่นเพลงได้ โปรดลองอีกครั้งภายหลัง`, allowedMentions: { repliedUser: false } });
+            });
+        }
     },
+};
+
+const isValidUrl = (str) => {
+    try {
+        new URL(str);
+        return true;
+    } catch (err) {
+        return false;
+    }
 };

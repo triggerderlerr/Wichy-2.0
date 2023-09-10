@@ -4,7 +4,7 @@ const fs = require('fs');
 
 const dotenv = require('dotenv');
 const { Client, GatewayIntentBits, Partials, Collection } = require('discord.js');
-const { Player } = require('discord-player');
+const { Player, QueryType } = require('discord-player');
 const express = require('express');
 require('console-stamp')(console, { format: ':date(yyyy/mm/dd HH:MM:ss)' });
 
@@ -37,7 +37,9 @@ client.config = {
     autoLeave: true,
     autoLeaveCooldown: 5000,
     displayVoiceState: true,
-    port: 33333
+    port: 33333,
+    urlQuery: QueryType.AUTO,
+    textQuery: QueryType.AUTO
 };
 
 client.commands = new Collection();
@@ -97,6 +99,14 @@ const setEnvironment = () => {
             client.config.port :
             Number(ENV.PORT);
 
+        client.config.textQuery = typeof (ENV.TEXT_QUERY_TYPE) === 'undefined' ?
+            client.config.textQuery :
+            ENV.TEXT_QUERY_TYPE
+
+        client.config.urlQuery = typeof (ENV.URL_QUERY_TYPE) === 'undefined' ?
+            client.config.urlQuery :
+            ENV.URL_QUERY_TYPE;
+            
         //console.log('setEnvironment: ', client.config);
         resolve();
     })
@@ -216,7 +226,7 @@ player.events.on('emptyChannel', (queue) => {
 
 //Error Handling (Catch unexpected errors and send to your DM)
 function sendErrorToDM(error, error_type) {
-    try {client.users.cache.get(ENV.ADMIN_ID).send(`**Unexpected Error Detected** ❌ (${error_type})\`\`\`${error.stack}\`\`\``);} catch {}
+    try {client.users.cache.get(ENV.ADMIN_ID).send(`**Unexpected Error Detected** ❌ \`(${error_type})\` \`\`\`${error.stack}\`\`\``);} catch {}
 }
 
 
