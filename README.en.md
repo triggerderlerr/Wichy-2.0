@@ -6,7 +6,7 @@ All of the documentation for this bot will be in Thai language as long as the mu
 
 # Wichy 2.0
 
-```📌 The current version of Wichy was forked from Music Disc 1.3.0, and I currently don't have a plan to upgrade to Music Disc 2.0.0```
+```📌 The current version of Wichy was forked from Music Disc 1.3.2, and I currently don't have a plan to upgrade to Music Disc 2.0.0```
 
 Wichy 2.0 was forked from Music Disc by hmes98318, I fork this bot because I want to use them in my and my friend's discord server. And for educational purposes only.
 
