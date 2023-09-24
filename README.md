@@ -1,3 +1,5 @@
+### [Developer's Note](https://crazywichgg.xyz/developer-note)
+
 English version please see [README.en.md](https://github.com/CrazyWichGG/Wichy-2.0/blob/main/README.en.md)
 
 # Wichy 2.0
