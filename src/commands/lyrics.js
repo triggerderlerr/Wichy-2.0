@@ -54,7 +54,7 @@ module.exports = {
                 return interaction.reply('❌ ไม่มีเพลงที่กำลังเล่นในขณะนี้');
             
             try {
-                interaction.reply('🔍 กำลังค้นหาเนื้อเพลง...');
+                await interaction.deferReply('🔍 กำลังค้นหาเนื้อเพลง...');
                 const lyrics = await lyricsFinder(queue.current.title, '');
                 if (lyrics.trim().length === 0) {
                     throw error;
@@ -66,7 +66,7 @@ module.exports = {
         }
 
         try {
-            interaction.reply('🔍 กำลังค้นหาเนื้อเพลง...');
+            await interaction.deferReply('🔍 กำลังค้นหาเนื้อเพลง...');
             const Title = interaction.options.getString('search');
             const lyrics = await lyricsFinder(Title, '');
             if (lyrics.trim().length === 0) {

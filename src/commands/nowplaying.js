@@ -18,14 +18,18 @@ module.exports = {
 
 
         const track = queue.currentTrack;
+        const progress = queue.node.createProgressBar();
         const timestamp = queue.node.getTimestamp();
         const trackDuration = timestamp.progress == 'Forever' ? 'Endless (Live)' : track.duration;
-        let description = `ศิลปิน : **${track.author}**\nเวลา : **${trackDuration}**`;
+        let description = `ศิลปิน : **${track.author}**\nเวลา **${trackDuration}**\n`
+            + '\n'
+            + `${progress} (**${timestamp.progress}**%)`;
 
-        let saveButton = new ButtonBuilder();
-        saveButton.setCustomId('Save Song');
-        saveButton.setLabel('บันทึก');
-        saveButton.setStyle(ButtonStyle.Success);
+
+        const saveButton = new ButtonBuilder()
+            .setCustomId('Save Song')
+            .setLabel('บันทึก')
+            .setStyle(ButtonStyle.Success);
         const row = new ActionRowBuilder().addComponents(saveButton);
 
         return message.channel.send({ embeds: [embed.Embed_save(track.title, track.url, track.thumbnail, description)], components: [row] });
@@ -39,14 +43,18 @@ module.exports = {
 
 
         const track = queue.currentTrack;
+        const progress = queue.node.createProgressBar();
         const timestamp = queue.node.getTimestamp();
         const trackDuration = timestamp.progress == 'Forever' ? 'Endless (Live)' : track.duration;
-        let description = `ศิลปิน : **${track.author}**\nเวลา : **${trackDuration}**`;
+        let description = `ศิลปิน : **${track.author}**\nเวลา **${trackDuration}**\n`
+            + '\n'
+            + `${progress} (**${timestamp.progress}**%)`;
 
-        let saveButton = new ButtonBuilder();
-        saveButton.setCustomId('Save Song');
-        saveButton.setLabel('บันทึก');
-        saveButton.setStyle(ButtonStyle.Success);
+
+        const saveButton = new ButtonBuilder()
+            .setCustomId('Save Song')
+            .setLabel('บันทึก')
+            .setStyle(ButtonStyle.Success);
         const row = new ActionRowBuilder().addComponents(saveButton);
 
         return interaction.reply({ embeds: [embed.Embed_save(track.title, track.url, track.thumbnail, description)], components: [row] });

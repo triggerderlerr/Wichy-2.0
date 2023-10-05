@@ -22,6 +22,10 @@ module.exports = {
                 {
                     name: "One",
                     value: "one"
+                },
+                {
+                    name: "Autoplay",
+                    value: "ap"
                 }
             ]
         }
@@ -37,7 +41,7 @@ module.exports = {
 
         mode = typeof queue.repeatMode == 'undefined' ? 0 : queue.repeatMode;
 
-        const methods = ['Off', 'Single', 'All'];
+        const methods = ['Off', 'Single', 'All', 'Autoplay'];
 
         try {
             switch (args[0].toLowerCase()) {
@@ -50,12 +54,15 @@ module.exports = {
                 case 'all' || 'queue':
                     mode = 2;
                     break;
+                case 'ap' || 'autoplay':
+                    mode = 3;
+                    break;
                 default:
                     return message.reply({ content: `❌ การใช้งานโหมดแบบกำหนดเอง ${prefix}loop <all/one/off>`, allowedMentions: { repliedUser: false } });
             }
         } catch (error) {
             if (!args[0]) {
-                if (mode == 1 || mode == 2)
+                if (mode == 1 || mode == 2 || mode == 3)
                     mode = 0;
                 else
                     mode = 2;
@@ -81,16 +88,18 @@ module.exports = {
         const methods = {
             off: 0,
             one: 1,
-            all: 2
+            all: 2,
+            ap: 3
         }
         const names = {
             off: "Off",
             one: "Single",
-            all: "All"
+            all: "All",
+            ap: "Autoplay"
         }
 
         if (!mode_input) {
-            if (mode == 1 || mode == 2)
+            if (mode == 1 || mode == 2 || mode == 3)
                 mode = 0;
             else
                 mode = 2;

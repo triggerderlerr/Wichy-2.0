@@ -3,7 +3,7 @@ const embed = require('../embeds/embeds');
 
 module.exports = {
     name: 'queue',
-    aliases: ['q'],
+    aliases: ['q', 'list'],
     description: 'แสดงคิวที่กำลังเล่นอยู่',
     usage: 'queue',
     voiceChannel: true,
@@ -18,7 +18,7 @@ module.exports = {
 
         const tracks = queue.tracks.map((track, index) => `${++index}. ${track.title}`);
 
-        let nowplaying = `กำลังเล่น : ${queue.currentTrack.title}\n\n`;
+        let nowplaying = `Now Playing : ${queue.currentTrack.title}\n\n`;
         let tracksQueue = '';
 
         if (tracks.length < 1) {

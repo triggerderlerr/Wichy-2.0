@@ -1,6 +1,6 @@
 module.exports = {
     name: 'shuffle',
-    aliases: ['sh'],
+    aliases: ['sh', 'random'],
     description: 'จัดเรียงเพลงในคิวแบบสุ่ม',
     usage: 'shuffle',
     voiceChannel: true,

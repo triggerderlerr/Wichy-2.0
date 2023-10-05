@@ -1,6 +1,6 @@
 module.exports = {
     name: 'stop',
-    aliases: [],
+    aliases: ['leave'],
     description: 'หยุดเพลงและออกจากห้องสนทนา',
     usage: 'stop',
     voiceChannel: true,
@@ -12,11 +12,8 @@ module.exports = {
         if (!queue || !queue.isPlaying())
             return message.reply({ content: `❌ ไม่มีเพลงที่กำลังเล่นในขณะนี้`, allowedMentions: { repliedUser: false } });
 
-        if (!queue.deleted) {
-            mode = 0;
-            queue.setRepeatMode(mode);
+        if (!queue.deleted)
             queue.delete();
-        }
 
         return message.react('👍');
     },
@@ -27,11 +24,8 @@ module.exports = {
         if (!queue || !queue.isPlaying())
             return interaction.reply({ content: `❌ ไม่มีเพลงที่กำลังเล่นในขณะนี้`, allowedMentions: { repliedUser: false } });
 
-        if (!queue.deleted) {
-            mode = 0;
-            queue.setRepeatMode(mode);
+        if (!queue.deleted)
             queue.delete();
-        }
 
         return interaction.reply('✅ บอทออกจากห้องสนทนาแล้ว');
     },

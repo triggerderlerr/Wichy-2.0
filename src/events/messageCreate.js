@@ -1,25 +1,24 @@
-const color = { white: '\x1B[0m', grey: '\x1B[2m' };
+const { color } = require(`${__dirname}/../utils/constants`);
+
 
 module.exports = (client, message) => {
-    if (message.author.bot || message.channel.type === 'dm')
-        return;
+    if (message.author.bot || message.channel.type === 'dm') return;
 
     const prefix = client.config.prefix;
+    if (message.content.indexOf(prefix) !== 0) return;
 
-    if (message.content.indexOf(prefix) !== 0)
-        return;
 
     const args = message.content.slice(prefix.length).trim().split(/ +/g);
     const command = args.shift().toLowerCase();
-
+    
     const cmd = client.commands.get(command) || client.commands.find(cmd => cmd.aliases && cmd.aliases.includes(command));
 
     if (cmd && cmd.voiceChannel) {
         if (!message.member.voice.channel)
-            return message.channel.send(`❌ คุณยังไม่ได้เชื่อมต่อกับห้องสนทนา`);
+            return message.reply({ content: `❌ คุณยังไม่ได้เชื่อมต่อกับห้องสนทนา`, allowedMentions: { repliedUser: false } });
 
         if (message.guild.members.me.voice.channel && message.member.voice.channelId !== message.guild.members.me.voice.channelId)
-            return message.channel.send(`❌ คุณไม่ได้อยู่ในห้องสนทนาเดียวกันกับบอท`);
+            return message.reply({ content: `❌ คุณไม่ได้อยู่ในห้องสนทนาเดียวกันกับบอท`, allowedMentions: { repliedUser: false } });
     }
 
     if (cmd) {

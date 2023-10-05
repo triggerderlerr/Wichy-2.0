@@ -1,17 +1,18 @@
 const embed = require('../embeds/embeds');
 
+
 module.exports = {
     name: 'help',
     aliases: ['h'],
     showHelp: false,
     description: 'แสดงคำสั่งทั้งหมด',
-    usage: 'help <command>',
+    usage: 'help [command]',
     options: [
         {
             name: "command",
             description: "แสดงการใช้งานของคำสั่งที่ระบุ",
             type: 3,
-            required: false,
+            required: false
         }
     ],
 

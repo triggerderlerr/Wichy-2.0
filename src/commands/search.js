@@ -1,5 +1,5 @@
-const { URL } = require('url');
 const { StringSelectMenuBuilder, ActionRowBuilder } = require("discord.js");
+const { isValidUrl } = require(`../utils/functions/isValidUrl`);
 
 
 module.exports = {
@@ -21,13 +21,13 @@ module.exports = {
         if (!args[0])
             return message.reply({ content: `❌ กรุณาใส่ชื่อเพลงที่ถูกต้อง`, allowedMentions: { repliedUser: false } });
 
-        const userInput = args.join(' ');
+        const str = args.join(' ');
         let queryType = '';
 
-        if (isValidUrl(userInput)) queryType = client.config.urlQuery;
+        if (isValidUrl(str)) queryType = client.config.urlQuery;
         else queryType = client.config.textQuery;
 
-        const results = await client.player.search(userInput, {
+        const results = await client.player.search(str, {
             requestedBy: message.member,
             searchEngine: queryType
         })
@@ -51,7 +51,9 @@ module.exports = {
             leaveOnEnd: client.config.autoLeave,
             leaveOnEmptyCooldown: client.config.autoLeaveCooldown,
             leaveOnEndCooldown: client.config.autoLeaveCooldown,
+            skipOnNoStream: true,
             volume: client.config.defaultVolume,
+            connectionTimeout: 999_999_999
         });
 
 
@@ -70,11 +72,11 @@ module.exports = {
             queue.addTrack(results.tracks);
 
             if (!queue.isPlaying()) {
-                await queue.node.play().catch((error) => {
-                    console.log(error);
-                    //if (!queue?.deleted) queue?.delete();
-                    return message.reply({ content: `❌ ไม่สามารถเล่นเพลงได้ โปรดลองอีกครั้งภายหลัง`, allowedMentions: { repliedUser: false } });
-                });
+                await queue.node.play()
+                    .catch((error) => {
+                        console.log(error);
+                        return message.reply({ content: `❌ ไม่สามารถเล่นเพลงได้ โปรดลองอีกครั้งภายหลัง`, allowedMentions: { repliedUser: false } });
+                    });
             }
 
             return message.reply({ content: "✅ เพิ่มเพลงแล้ว", allowedMentions: { repliedUser: false } });
@@ -104,11 +106,11 @@ module.exports = {
                 queue.addTrack(results.tracks.find(x => x.id == i.values[0]));
 
                 if (!queue.isPlaying()) {
-                    await queue.node.play().catch((error) => {
-                        console.log(error);
-                        //if (!queue?.deleted) queue?.delete();
-                        return message.reply({ content: `❌ ไม่สามารถเล่นเพลงได้ โปรดลองอีกครั้งภายหลัง`, allowedMentions: { repliedUser: false } });
-                    });
+                    await queue.node.play()
+                        .catch((error) => {
+                            console.log(error);
+                            return message.reply({ content: `❌ ไม่สามารถเล่นเพลงได้ โปรดลองอีกครั้งภายหลัง`, allowedMentions: { repliedUser: false } });
+                        });
                 }
 
                 i.deferUpdate();
@@ -127,19 +129,19 @@ module.exports = {
     async slashExecute(client, interaction) {
         await interaction.deferReply();
 
-        const userInput = interaction.options.getString("search");
+        const str = interaction.options.getString("search");
         let queryType = '';
 
-        if (isValidUrl(userInput)) queryType = client.config.urlQuery;
+        if (isValidUrl(str)) queryType = client.config.urlQuery;
         else queryType = client.config.textQuery;
 
-        const results = await client.player.search(userInput, {
+        const results = await client.player.search(str, {
             requestedBy: interaction.member,
             searchEngine: queryType
         })
             .catch((error) => {
                 console.log(error);
-                return message.reply({ content: `❌ เกิดปัญหาบางอย่างขึ้น โปรดลองอีกครั้งภายหลัง`, allowedMentions: { repliedUser: false } });
+                return interaction.reply({ content: `❌ เกิดปัญหาบางอย่างขึ้น โปรดลองอีกครั้งภายหลัง`, allowedMentions: { repliedUser: false } });
             });
 
         if (!results || !results.hasTracks())
@@ -157,7 +159,9 @@ module.exports = {
             leaveOnEnd: client.config.autoLeave,
             leaveOnEmptyCooldown: client.config.autoLeaveCooldown,
             leaveOnEndCooldown: client.config.autoLeaveCooldown,
+            skipOnNoStream: true,
             volume: client.config.defaultVolume,
+            connectionTimeout: 999_999_999
         });
 
         try {
@@ -173,11 +177,11 @@ module.exports = {
             queue.addTrack(results.tracks);
 
             if (!queue.isPlaying()) {
-                await queue.node.play().catch((error) => {
-                    console.log(error);
-                    //if (!queue?.deleted) queue?.delete();
-                    return interaction.editReply({ content: `❌ ไม่สามารถเล่นเพลงได้ โปรดลองอีกครั้งภายหลัง`, allowedMentions: { repliedUser: false } });
-                });
+                await queue.node.play()
+                    .catch((error) => {
+                        console.log(error);
+                        return interaction.reply({ content: `❌ ไม่สามารถเล่นเพลงได้ โปรดลองอีกครั้งภายหลัง`, allowedMentions: { repliedUser: false } });
+                    });
             }
 
             return interaction.editReply("✅ เพิ่มเพลงแล้ว");
@@ -185,7 +189,7 @@ module.exports = {
         else {
             let select = new StringSelectMenuBuilder()
                 .setCustomId("musicSelect")
-                .setPlaceholder("เลือกเพลงที่ต้องการเล่น")
+                .setPlaceholder("Select the music")
                 .setOptions(results.tracks.map(x => {
                     return {
                         label: x.title.length >= 25 ? x.title.substring(0, 22) + "..." : x.title,
@@ -207,11 +211,11 @@ module.exports = {
                 queue.addTrack(results.tracks.find(x => x.id == i.values[0]));
 
                 if (!queue.isPlaying()) {
-                    await queue.node.play().catch((error) => {
-                        console.log(error);
-                        //if (!queue?.deleted) queue?.delete();
-                        return interaction.editReply({ content: `❌ ไม่สามารถเล่นเพลงได้ โปรดลองอีกครั้งภายหลัง`, allowedMentions: { repliedUser: false } });
-                    });
+                    await queue.node.play()
+                        .catch((error) => {
+                            console.log(error);
+                            return interaction.reply({ content: `❌ ไม่สามารถเล่นเพลงได้ โปรดลองอีกครั้งภายหลัง`, allowedMentions: { repliedUser: false } });
+                        });
                 }
 
                 i.deferUpdate();
@@ -227,12 +231,3 @@ module.exports = {
         }
     },
 };
-
-const isValidUrl = (str) => {
-    try {
-        new URL(str);
-        return true;
-    } catch (err) {
-        return false;
-    }
-}

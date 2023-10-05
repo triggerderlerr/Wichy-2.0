@@ -4,12 +4,12 @@ const fs = require('fs');
 
 const dotenv = require('dotenv');
 const { Client, GatewayIntentBits, Partials, Collection } = require('discord.js');
-const { Player, QueryType } = require('discord-player');
+const { Player } = require('discord-player');
 const express = require('express');
 require('console-stamp')(console, { format: ':date(yyyy/mm/dd HH:MM:ss)' });
 
-const embed = require(`${__dirname}/embeds/embeds`);
-
+const registerPlayerEvents = require(`${__dirname}/events/discord-player/player`);
+const cst = require(`${__dirname}/utils/constants`);
 
 dotenv.config();
 const ENV = process.env;
@@ -27,89 +27,68 @@ let client = new Client({
     disableMentions: 'everyone',
 });
 
-
-client.config = {
-    name: 'Music Disc',
-    prefix: '-',
-    playing: '+help | music',
-    defaultVolume: 50,
-    maxVolume: 100,
-    autoLeave: true,
-    autoLeaveCooldown: 5000,
-    displayVoiceState: true,
-    port: 33333,
-    urlQuery: QueryType.AUTO,
-    textQuery: QueryType.AUTO
-};
-
+client.config = cst.config;
 client.commands = new Collection();
 client.player = new Player(client, {
-    ytdlOptions: {
-        filter: 'audioonly',
-        quality: 'highestaudio',
-        highWaterMark: 1 << 27
-    }
+    autoRegisterExtractor: false,
+    ytdlOptions: cst.ytdlOptions
 });
 
+
 const player = client.player;
-const color = {
-    white: '\x1B[0m',
-    grey: '\x1B[2m',
-    green: '\x1B[32m'
-};
 
 
 
 
 const setEnvironment = () => {
     return new Promise((resolve, reject) => {
-        client.config.name = typeof (ENV.BOT_NAME) === 'undefined' ?
-            client.config.name :
-            ENV.BOT_NAME;
+        client.config.name = typeof (ENV.BOT_NAME) === 'undefined'
+            ? client.config.name
+            : ENV.BOT_NAME;
 
-        client.config.prefix = typeof (ENV.PREFIX) === 'undefined' ?
-            client.config.prefix :
-            ENV.PREFIX;
+        client.config.prefix = typeof (ENV.PREFIX) === 'undefined'
+            ? client.config.prefix
+            : ENV.PREFIX;
 
-        client.config.playing = typeof (ENV.PLAYING) === 'undefined' ?
-            client.config.playing :
-            ENV.PLAYING;
+        client.config.playing = typeof (ENV.PLAYING) === 'undefined'
+            ? client.config.playing
+            : ENV.PLAYING;
 
-        client.config.defaultVolume = typeof (ENV.DEFAULT_VOLUME) === 'undefined' ?
-            client.config.defaultVolume :
-            Number(ENV.DEFAULT_VOLUME);
+        client.config.defaultVolume = typeof (ENV.DEFAULT_VOLUME) === 'undefined'
+            ? client.config.defaultVolume
+            : Number(ENV.DEFAULT_VOLUME);
 
-        client.config.maxVolume = typeof (ENV.MAX_VOLUME) === 'undefined' ?
-            client.config.maxVolume :
-            Number(ENV.MAX_VOLUME);
+        client.config.maxVolume = typeof (ENV.MAX_VOLUME) === 'undefined'
+            ? client.config.maxVolume
+            : Number(ENV.MAX_VOLUME);
 
-        client.config.autoLeave = typeof (ENV.AUTO_LEAVE) === 'undefined' ?
-            client.config.autoLeave :
-            (String(ENV.AUTO_LEAVE) === 'true' ? true : false);
+        client.config.autoLeave = typeof (ENV.AUTO_LEAVE) === 'undefined'
+            ? client.config.autoLeave
+            : (String(ENV.AUTO_LEAVE) === 'true' ? true : false);
 
-        client.config.autoLeaveCooldown = typeof (ENV.AUTO_LEAVE_COOLDOWN) === 'undefined' ?
-            client.config.autoLeaveCooldown :
-            Number(ENV.AUTO_LEAVE_COOLDOWN);
+        client.config.autoLeaveCooldown = typeof (ENV.AUTO_LEAVE_COOLDOWN) === 'undefined'
+            ? client.config.autoLeaveCooldown
+            : Number(ENV.AUTO_LEAVE_COOLDOWN);
 
-        client.config.displayVoiceState = typeof (ENV.DISPLAY_VOICE_STATE) === 'undefined' ?
-            client.config.displayVoiceState :
-            (String(ENV.DISPLAY_VOICE_STATE) === 'true' ? true : false);
+        client.config.displayVoiceState = typeof (ENV.DISPLAY_VOICE_STATE) === 'undefined'
+            ? client.config.displayVoiceState
+            : (String(ENV.DISPLAY_VOICE_STATE) === 'true' ? true : false);
 
-        client.config.port = typeof (ENV.PORT) === 'undefined' ?
-            client.config.port :
-            Number(ENV.PORT);
+        client.config.port = typeof (ENV.PORT) === 'undefined'
+            ? client.config.port
+            : Number(ENV.PORT);
 
-        client.config.textQuery = typeof (ENV.TEXT_QUERY_TYPE) === 'undefined' ?
-            client.config.textQuery :
-            ENV.TEXT_QUERY_TYPE
+        client.config.textQuery = typeof (ENV.TEXT_QUERY_TYPE) === 'undefined'
+            ? client.config.textQuery
+            : ENV.TEXT_QUERY_TYPE
 
-        client.config.urlQuery = typeof (ENV.URL_QUERY_TYPE) === 'undefined' ?
-            client.config.urlQuery :
-            ENV.URL_QUERY_TYPE;
-            
+        client.config.urlQuery = typeof (ENV.URL_QUERY_TYPE) === 'undefined'
+            ? client.config.urlQuery
+            : ENV.URL_QUERY_TYPE;
+
         //console.log('setEnvironment: ', client.config);
         resolve();
-    })
+    });
 }
 
 
@@ -149,8 +128,20 @@ const loadEvents = () => {
             }
         };
         console.log(`+--------------------------------+`);
-        console.log(`${color.grey}-- loading Events finished --${color.white}`);
+        console.log(`${cst.color.grey}-- loading Events finished --${cst.color.white}`);
+        resolve();
+    })
+}
 
+const loadPlayer = () => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            await player.extractors.loadDefault();
+            registerPlayerEvents(player, client);
+        } catch (error) {
+            reject(error);
+        }
+        console.log('-> loading Player Events finished');
         resolve();
     })
 }
@@ -175,8 +166,7 @@ const loadCommands = () => {
             }
         };
         console.log(`+---------------------------+`);
-        console.log(`${color.grey}-- loading Commands finished --${color.white}`);
-
+        console.log(`${cst.color.grey}-- loading Commands finished --${cst.color.white}`);
         resolve();
     })
 }
@@ -186,55 +176,24 @@ Promise.resolve()
     .then(() => setEnvironment())
     .then(() => loadFramework())
     .then(() => loadEvents())
+    .then(() => loadPlayer())
     .then(() => loadCommands())
     .then(() => {
-        console.log(`${color.green}*** All loaded successfully ***${color.white}`);
+        console.log(`${cst.color.green}*** All loaded successfully ***${cst.color.white}`);
         client.login(ENV.TOKEN);
     });
 
-
-
-
-const settings = (queue, song) =>
-    `**เสียง**: \`${queue.node.volume}%\` | **วนซ้ำ**: \`${queue.repeatMode ? (queue.repeatMode === 2 ? 'All' : 'ONE') : 'Off'}\``;
-
-
-player.events.on('playerStart', (queue, track) => {
-    //if (queue.repeatMode !== 0) return; //--> If you don't want the bot to send a message when the song is repeated
-    queue.metadata.channel.send({ embeds: [embed.Embed_play("กำลังเล่น", track.title, track.url, track.duration, track.thumbnail, settings(queue))] });
-});
-
-player.events.on('audioTrackAdd', (queue, track) => {
-    if (queue.isPlaying())
-        queue.metadata.channel.send(`✅ ${track.title} ถูกเพิ่มเข้าไปในคิวแล้ว`);
-        //queue.metadata.channel.send({ embeds: [embed.Embed_play("Added", track.title, track.url, track.duration, track.thumbnail, settings(queue))] });
-});
-
-player.events.on('playerError', (queue, error) => {
-    console.log(`I'm having trouble connecting => ${error.message}`);
-});
-
-player.events.on('error', (queue, error) => {
-    console.log(`There was a problem with the song queue => ${error.message}`);
-});
-
-player.events.on('emptyChannel', (queue) => {
-    if (!client.config.autoLeave) {
-        try{queue.stop();} catch {} //--> Prevent bot from sending error (AbortError) since it still work fine
-    }
-});
 
 //Error Handling (Catch unexpected errors and send to your DM)
 function sendErrorToDM(error, error_type) {
     try {client.users.cache.get(ENV.ADMIN_ID).send(`**Unexpected Error Detected** ❌ \`(${error_type})\` \`\`\`${error.stack}\`\`\``);} catch {}
 }
 
-
 process.on('uncaughtException', err => {
     console.log('Uncaught Exception:', err.stack);
     sendErrorToDM(err, 'Uncaught Exception');
 });
-  
+    
 process.on('unhandledRejection', reason => {
     if (reason != "DiscordAPIError[50007]: Cannot send messages to this user") {
         console.log('Unhandled Rejection:', reason.stack);

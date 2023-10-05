@@ -1,7 +1,7 @@
 module.exports = {
     name: 'pause',
     aliases: ['pa'],
-    description: 'หยุดเพลงชั่วคราว',
+    description: 'Pause current song',
     usage: 'pause',
     voiceChannel: true,
     options: [],
@@ -23,6 +23,6 @@ module.exports = {
             return interaction.reply({ content: `❌ ไม่มีเพลงที่กำลังเล่นในขณะนี้`, allowedMentions: { repliedUser: false } });
 
         const success = queue.node.pause();
-        return success ? interaction.reply("⏸️ หยุดเพลงชั่วคราวแล้ว") : interaction.reply({ content: `❌ มีบางอย่างผิดพลาด`, allowedMentions: { repliedUser: false } });
+        return success ? interaction.reply("⏸️ | Music paused.") : interaction.reply({ content: `❌ มีบางอย่างผิดพลาด`, allowedMentions: { repliedUser: false } });
     },
 };

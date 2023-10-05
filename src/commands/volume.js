@@ -2,7 +2,7 @@ module.exports = {
     name: 'volume',
     aliases: ['v'],
     description: `เปลี่ยนระดับเสียงของคิวปัจจุบัน`,
-    usage: 'volume <0-200>',
+    usage: 'v <0-200>',
     voiceChannel: true,
     options: [
         {
@@ -10,7 +10,7 @@ module.exports = {
             description: "ระดับเสียง (0-200)",
             type: 4,
             required: true,
-            min_value: 0
+            min_value: 1
         }
     ],
 

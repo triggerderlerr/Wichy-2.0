@@ -6,7 +6,7 @@ All of the documentation for this bot will be in Thai language as long as the mu
 
 # Wichy 2.0
 
-```📌 The current version of Wichy was forked from Music Disc 1.3.0, and I currently don't have a plan to upgrade to Music Disc 2.0.0```
+```📌 The current version of Wichy was forked from Music Disc 1.4.2, and I currently don't have a plan to upgrade to Music Disc 2.0.0```
 
 Wichy 2.0 was forked from Music Disc by hmes98318, I fork this bot because I want to use them in my and my friend's discord server. And for educational purposes only.
 
@@ -14,7 +14,7 @@ To see more please [click here](https://github.com/hmes98318/Music-Disc)
 
 ## Invite
 
-Or if you want to invite my bot then [click here](https://crazywichgg.github.io/wichy)
+Or if you want to invite my bot then [click here](https://crazywichgg.xyz/wichy)
 
 PS: _This bot is in Thai language_ 
 

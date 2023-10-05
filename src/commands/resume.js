@@ -1,6 +1,6 @@
 module.exports = {
     name: 'resume',
-    aliases: ['re'],
+    aliases: [],
     description: 'เล่นเพลงที่หยุดชั่วคราวต่อ',
     usage: 'resume',
     voiceChannel: true,

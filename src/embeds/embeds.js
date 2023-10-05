@@ -1,27 +1,37 @@
 const dotenv = require('dotenv');
 const Discord = require('discord.js');
 
-dotenv.config()
+dotenv.config();
 const ENV = process.env;
 
-const github = 'https://github.com/CrazyWichGG/Wichy-2.0';
-//const bot_version = require('../../package.json').version;
-const bot_version = typeof (process.env.BOT_VERSION) === 'undefined' ? 'v1.0.0' : (ENV.BOT_VERSION);
+const github = 'https://github.com/hmes98318/Music-Disc';
+const bot_version = require('../../package.json').version;
 
 const bot_name = typeof (process.env.BOT_NAME) === 'undefined' ? 'Music Disc' : (ENV.BOT_NAME);
-const color = typeof (process.env.EMBEDS_COLOR) === 'undefined' ? '#FFD900' : (ENV.EMBEDS_COLOR);
+const color = typeof (process.env.EMBEDS_COLOR) === 'undefined' ? '#FFFFFF' : (ENV.EMBEDS_COLOR);
 
 
 module.exports = {
-    Embed_play: function (status, music_title, music_url, music_length, music_thumbnail, settings) {
-        const Embed_play = new Discord.EmbedBuilder()
+    Embed_dashboard: function (status, music_title, music_url, music_thumbnail, music_description) {
+        const Embed_dashboard = new Discord.EmbedBuilder()
             .setColor(color)
             .setTitle(music_title)
             .setURL(music_url)
             .setThumbnail(music_thumbnail)
-            .addFields({ name: status, value: `**เวลา**: \`${music_length}\` | ${settings}`, inline: true })
+            .addFields({ name: status, value: music_description })
             .setTimestamp()
-        return Embed_play;
+        return Embed_dashboard;
+    },
+
+    Embed_add: function (status, music_title, music_url, music_thumbnail, music_author, music_length) {
+        const Embed_add = new Discord.EmbedBuilder()
+            .setColor(color)
+            .setTitle(music_title)
+            .setURL(music_url)
+            .setThumbnail(music_thumbnail)
+            .addFields({ name: status, value: `ศิลปิน  : **${music_author}**\nเวลา **${music_length}**`, inline: true })
+            .setTimestamp()
+        return Embed_add;
     },
 
     Embed_queue: function (status, nowplay, queueMsg, loopStatus) {
@@ -36,7 +46,7 @@ module.exports = {
 
     Embed_remove: function (status, music_title) {
         const Embed_remove = new Discord.EmbedBuilder()
-            .setColor("#FF0000")
+            .setColor(color)
             .setTitle(status)
             .setDescription(`${music_title}`)
             .setTimestamp()
@@ -82,14 +92,16 @@ module.exports = {
         return Embed_help2;
     },
 
-    Embed_status: function (uptime, os, node_v, djs_v, cpu, cpu_usage, ram, ping) {
+    Embed_status: function (uptime, os, node_v, djs_v, cpu, cpu_usage, ram, heap, ping, serverCount) {
         const Embed_status = new Discord.EmbedBuilder()
             .setColor(color)
             .setTitle(`${bot_name} v${bot_version}`)
             .setURL(github)
+            .setDescription(`**• Serving ${serverCount} servers**\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━`)
             .addFields(
-                { name: `⚙️ SYSTEM`, value: `OS : **${os}**\nNode.js : **${node_v}**\nDiscord.js : **${djs_v}**\nCPU : **${cpu}**\n━━━━━━━━━━━━━━━━━━━━━━`, inline: false },
-                { name: `📊 USAGE`, value: `CPU : **${cpu_usage}**\nMEM : **${ram}**\nUptime : **${uptime}**\nPING : **${ping}ms**\n━━━━━━━━━━━━━━━━━━━━━━`, inline: false }
+                { name: `⚙️ SYSTEM`, value: `OS : **${os}**\nNode.js : **${node_v}**\nDiscord.js : **${djs_v}**\nCPU : **${cpu}**\nUptime : **${uptime}**\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━`, inline: false },
+                { name: `📊 USAGE`, value: `CPU : **${cpu_usage}**\nRam : **${ram}**\nHeap : **${heap}**\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━`, inline: false },
+                { name: `🛰️ LATENCY`, value: `Bot : **${ping.bot}**\nAPI : **${ping.api}ms**`, inline: false }
             )
             .setTimestamp()
         return Embed_status;
@@ -103,11 +115,26 @@ module.exports = {
         return Embed_server;
     },
 
-    Embed_ping: function (ping) {
+    Embed_ping: function (bot, api) {
         const Embed_ping = new Discord.EmbedBuilder()
             .setColor(color)
-            .setDescription(`ปิง : **${ping}**ms`)
+            .setTitle('🛰️ ความหน่วงต่อเซิฟเวอร์')
+            .setDescription(`บอท : **${bot}**\nAPI : **${api}ms**`)
         return Embed_ping;
+    },
+
+    Embed_connect: function () {
+        const Embed_connect = new Discord.EmbedBuilder()
+            .setColor(color)
+            .setDescription('✅ เชื่อมต่อห้องสนทนาแล้ว')
+        return Embed_connect;
+    },
+
+    Embed_disconnect: function () {
+        const Embed_disconnect = new Discord.EmbedBuilder()
+            .setColor(color)
+            .setDescription('เล่นเพลงเสร็จแล้ว')
+        return Embed_disconnect;
     },
 
     Embed_lyrics: function (lyrics_title, lyrics_description) {

@@ -1,4 +1,4 @@
-const { URL } = require('url');
+const { isValidUrl } = require(`../utils/functions/isValidUrl`);
 
 
 module.exports = {
@@ -10,26 +10,23 @@ module.exports = {
     options: [
         {
             name: "search",
-            description: "ชื่อเพลงหรือ URL ของเพลงที่ต้องการเล่น",
+            description: "ใส่ชื่อเพลงหรือ URL เพลงที่ต้องการจะเล่น",
             type: 3,
             required: true
         }
     ],
 
     async execute(client, message, args) {
-
         if (!args[0])
             return message.reply({ content: `❌ พิมพ์ชื่อเพลงที่คุณต้องการหาหรือวาง URL ของเพลงที่ต้องการเปิด`, allowedMentions: { repliedUser: false } });
-        
-        const userInput = args.join(' ');
+
+        const str = args.join(' ');
         let queryType = '';
 
-        await client.player.extractors.loadDefault();
-
-        if (isValidUrl(userInput)) queryType = client.config.urlQuery;
+        if (isValidUrl(str)) queryType = client.config.urlQuery;
         else queryType = client.config.textQuery;
 
-        const results = await client.player.search(userInput, {
+        const results = await client.player.search(str, {
             requestedBy: message.member,
             searchEngine: queryType
         })
@@ -38,9 +35,9 @@ module.exports = {
                 return message.reply({ content: `❌ เกิดปัญหาบางอย่างขึ้น โปรดลองอีกครั้งภายหลัง`, allowedMentions: { repliedUser: false } });
             });
 
-        if (!results || !results.hasTracks()) {
+        if (!results || !results.hasTracks())
             return message.reply({ content: `❌ ไม่พบผลลัพธ์`, allowedMentions: { repliedUser: false } });
-        }
+
 
         /*
         const queue = await client.player.play(message.member.voice.channel.id, results, {
@@ -70,7 +67,9 @@ module.exports = {
             leaveOnEnd: client.config.autoLeave,
             leaveOnEmptyCooldown: client.config.autoLeaveCooldown,
             leaveOnEndCooldown: client.config.autoLeaveCooldown,
+            skipOnNoStream: true,
             volume: client.config.defaultVolume,
+            connectionTimeout: 999_999_999
         });
 
         try {
@@ -85,11 +84,11 @@ module.exports = {
         results.playlist ? queue.addTrack(results.tracks) : queue.addTrack(results.tracks[0]);
 
         if (!queue.isPlaying()) {
-            await queue.node.play().catch((error) => {
-                console.log(error);
-                //if (!queue?.deleted) queue?.delete();
-                return message.reply({ content: `❌ ไม่สามารถเล่นเพลงได้ โปรดลองอีกครั้งภายหลัง`, allowedMentions: { repliedUser: false } });
-            });
+            await queue.node.play()
+                .catch((error) => {
+                    console.log(error);
+                    return message.reply({ content: `❌ ไม่สามารถเล่นเพลงได้ โปรดลองอีกครั้งภายหลัง`, allowedMentions: { repliedUser: false } });
+                });
         }
 
         return message.react('👍');
@@ -97,15 +96,13 @@ module.exports = {
 
     async slashExecute(client, interaction) {
 
-        const userInput =interaction.options.getString("search");
+        const str = interaction.options.getString("search");
         let queryType = '';
 
-        await client.player.extractors.loadDefault();
-
-        if (isValidUrl(userInput)) queryType = client.config.urlQuery;
+        if (isValidUrl(str)) queryType = client.config.urlQuery;
         else queryType = client.config.textQuery;
 
-        const results = await client.player.search(userInput, {
+        const results = await client.player.search(str, {
             requestedBy: interaction.member,
             searchEngine: queryType
         })
@@ -129,7 +126,9 @@ module.exports = {
             leaveOnEnd: client.config.autoLeave,
             leaveOnEmptyCooldown: client.config.autoLeaveCooldown,
             leaveOnEndCooldown: client.config.autoLeaveCooldown,
+            skipOnNoStream: true,
             volume: client.config.defaultVolume,
+            connectionTimeout: 999_999_999
         });
 
         try {
@@ -143,23 +142,14 @@ module.exports = {
 
         results.playlist ? queue.addTrack(results.tracks) : queue.addTrack(results.tracks[0]);
 
-        interaction.reply({ content: `✅ เพิ่มเพลงเข้าคิวแล้ว`, allowedMentions: { repliedUser: false } });
-
         if (!queue.isPlaying()) {
-            await queue.node.play().catch((error) => {
-                console.log(error);
-                //if (!queue?.deleted) queue?.delete();
-                return interaction.followUp({ content: `❌ ไม่สามารถเล่นเพลงได้ โปรดลองอีกครั้งภายหลัง`, allowedMentions: { repliedUser: false } });
-            });
+            await queue.node.play()
+                .catch((error) => {
+                    console.log(error);
+                    return interaction.reply({ content: `❌ ไม่สามารถเล่นเพลงได้ โปรดลองอีกครั้งภายหลัง`, allowedMentions: { repliedUser: false } });
+                });
         }
-    },
-};
 
-const isValidUrl = (str) => {
-    try {
-        new URL(str);
-        return true;
-    } catch (err) {
-        return false;
-    }
+        return interaction.reply("✅ เพิ่มเพลงเข้าคิวแล้ว");
+    },
 };
