@@ -3,6 +3,9 @@
 
 and I'll still provide bug fixes for the current version (version 2) until I finish version 3.
 ```
+```
+✅ Wichy is back online! Thank you for your patience and support.
+```
 
 # Wichy 2.0
 
