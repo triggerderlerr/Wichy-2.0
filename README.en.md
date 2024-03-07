@@ -1,5 +1,5 @@
 ```
-📌 This version (2.4.0) will be the last minor update version of Wichy. I'll still provide bug fixes for the current version (version 2).
+📌 This version (2.4.x) will be the last minor update version of Wichy. I'll still provide bug fixes for the current version (version 2).
 ```
 
 # Wichy 2.0
