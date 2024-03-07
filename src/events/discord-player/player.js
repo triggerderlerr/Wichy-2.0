@@ -55,7 +55,7 @@ const registerPlayerEvents = (player, client) => {
             const shuffleButton = new ButtonBuilder().setCustomId('Playing-Shuffle').setEmoji(button.shuffle).setStyle(ButtonStyle.Secondary);
             //const row = new ActionRowBuilder().addComponents(playPauseButton, skipButton, stopButton, loopButton, shuffleButton);
 
-            const cur = queue.currentTrack;
+            const cur = queue.tracks.data[queue.tracks.data.length - 1];
             //queue.dashboard = await queue.metadata.channel.send({ embeds: [embed.Embed_dashboard('Dashboard', cur.title, cur.url, cur.thumbnail, settings(queue))]/*, components: [row] */});
             await queue.metadata.channel.send(`✅ ${cur.title} ถูกเพิ่มเข้าไปในคิวแล้ว`); //No need to queue.dashboard
             return;
@@ -78,7 +78,7 @@ const registerPlayerEvents = (player, client) => {
             }
         } else {
             queue.node.stop();
-            return queue.metadata.channel.send({ content: `❌ เล่นวีดีโอนี้ไม่ได้ วีดีโอนี้อาจยาวเกินไปหรือไม่พร้อมให้ชมในภูมิภาดของคุณ`, allowedMentions: { repliedUser: false } });
+            return queue.metadata.channel.send({ content: `❌ เล่นวีดีโอนี้ไม่ได้ วีดีโอนี้อาจยาวเกินไปหรือไม่พร้อมให้ชมในภูมิภาคของคุณ`, allowedMentions: { repliedUser: false } });
         }
     });
 
